@@ -12,11 +12,11 @@ import os
 from scipy import optimize
 
 snip_width = 0.0006
-chi_sqr_snipwidth = 8
+chi_sqr_snipwidth = 10
 CO_species = 13
 
 #base directory
-base_dir = 'C:\\Users\\there\\Desktop\\M-band_Spectra_of_Solar_Twins\\'
+base_dir = 'C:\\Users\\d338c921\\Desktop\\M-band_Spectra_of_Solar_Twins\\'
 #base_dir_solar_models = 'C:\\Users\\there\\Desktop\\M-band_Spectra_of_Solar_Twins\\Solar_Models\\'
 
 obj_list = []
@@ -82,7 +82,7 @@ def snip_spectrum(line_list, spectrum, error, wavegrid, snip_width, interp_sampl
         snips_wl[i, :] = np.linspace(line_list[i] - (snip_width/2), line_list[i] + (snip_width/2), interp_sample_size)
         snips_flux[i, :] = spec_mini_interp
         snips_flux_norm[i, :] = spec_norm
-        snips_err[i, :] = err_mini_interp
+        snips_err[i, :] = err_mini_interp / np.nanmean(spec_mini_interp)
     return snips_wl.T, snips_flux.T, snips_flux_norm.T, snips_err.T
 
 def snip_spectrum_simp(line_list, spectrum, wavegrid, snip_width, interp_sample_size): #indices_per_width uniform in solar spectrum but NOT in solar twin spectra
@@ -99,35 +99,6 @@ def snip_spectrum_simp(line_list, spectrum, wavegrid, snip_width, interp_sample_
         snips_flux_norm[i, :] = spec_norm
     return snips_wl.T, snips_flux.T, snips_flux_norm.T
 ###WILL RETURN AN ERROR IF LINES FROM DISCONTINOUS REGIONS IN THE SPECTRUM ARE USED
-
-#INTERPOLATION IS BAD; see what it looks like in solar model for interp_sample_size = 15, 30, 50, 100, 500
-# sun = pyfits.getdata(base_dir + "nlte5780_4.44.1x.fromsun.hires.spec.fits")
-# sun_wl = sun[0,:] / 10000
-# sun_flux_log = sun[1,:] #log base 10 of flux
-# sun_flux = 10**sun_flux_log
-# sun_flux_norm = sun_flux / np.nanmedian(sun_flux)
-
-# useable_13_CO_lines = useable_lines(wl_13_CO, [11, 12, 24, 25])
-
-# for i in [15, 30, 50, 100, 500]:
-#     plt.figure()
-#     plt.title("Interpolated Snips: Sample size = " + str(i))
-#     plt.xlabel("Wavelength in microns")
-#     plt.ylabel("Normalized Flux")
-#     plt.xlim(4.6, 4.7)
-#     plt.ylim(0.3, 0.5)
-#     snips_wl, snips_flux = snip_spectrum(useable_13_CO_lines, sun_flux_norm, sun_wl, 0.0003, i)
-#     plt.plot(sun_wl, sun_flux_norm)
-#     plt.plot(snips_wl, snips_flux)
-#     for j in range(useable_13_CO_lines.shape[0] - 1):
-#         plt.axvline(x = useable_13_CO_lines[j], color= 'k', linestyle='-')
-#         label3 = plt.axvline(x = useable_13_CO_lines[-1], color= 'k', linestyle='-')
-#     plt.legend([label3], ["13CO"])
-
-###
-#determine useable line list beforehand
-#useable_line_list = useable_lines(wl_13_CO, []) #choose a CO species line list; blank skip_list leaves entire line_list
-###
 
 #Write a function to output stack_vel and stack_flux for a given star/model i.e. same result as snip_plots with output_stack = True but without the plots
 def stack_data(star, useable_line_list, snip_width):
@@ -214,8 +185,8 @@ def stack_data(star, useable_line_list, snip_width):
         snips_wl, snips_flux, snips_flux_norm, snips_err = snip_spectrum(useable_line_list, flux, err, wl, snip_width, 50)
         #stars w/ velocity shift corrections
         stack_vel = np.mean((snips_wl - useable_line_list) / useable_line_list * 3e5, axis = 1) + velocity_shifts[star - 1]
-        stack_flux = np.mean(snips_flux_norm, axis = 1) ###
-        stack_err = np.mean(snips_err, axis = 1)
+        stack_flux = np.average(snips_flux_norm, axis = 1, weights = snips_err**-2) ###weighted average using weights 1/variance
+        stack_err = np.sqrt(1./ (snips_err**-2).sum(axis = 1))
         
         return stack_vel, stack_flux, stack_err
     
@@ -244,7 +215,7 @@ def chi_sqr(stack_vel_obs, stack_vel_model, stack_flux_obs, stack_flux_model, er
         chisqr = chisqr + ((stack_flux_obs[i] - stack_flux_model[i])**2)/(err[i]**2)
     return chisqr
 
-def calc_abundance(star_num, star_line_list, solar_line_list, snip_width, abundance_guess, plot):
+def calc_abundance(star_num, line_list, solar_line_list, star_skiplist, snip_width, abundance_guess, plot, label = "HIP ###"):
     ###requires stack_data() and chi_sqr() functions
     #requires scipy.optimize
     
@@ -255,17 +226,19 @@ def calc_abundance(star_num, star_line_list, solar_line_list, snip_width, abunda
     #if plot = true, show the plot of chi-sqr values, data fit, and min
     
     #stack_data for chosen star and all four solar models
-    stack_vel, stack_flux, stack_err = stack_data(star_num, star_line_list, snip_width)
+    star_lines = useable_lines(line_list, star_skiplist)
+    sun_lines = useable_lines(solar_line_list, star_skiplist)
+    stack_vel, stack_flux, stack_err = stack_data(star_num, star_lines, snip_width)
     
-    stack_vel1, stack_flux1 = stack_data(96, solar_line_list, snip_width)
-    stack_vel2, stack_flux2 = stack_data(97, solar_line_list, snip_width)
-    stack_vel3, stack_flux3 = stack_data(98, solar_line_list, snip_width)
-    stack_vel4, stack_flux4 = stack_data(99, solar_line_list, snip_width)
+    stack_vel1, stack_flux1 = stack_data(96, sun_lines, snip_width)
+    stack_vel2, stack_flux2 = stack_data(97, sun_lines, snip_width)
+    stack_vel3, stack_flux3 = stack_data(98, sun_lines, snip_width)
+    stack_vel4, stack_flux4 = stack_data(99, sun_lines, snip_width)
         
     #calculate 4 chi_sqr values and put them in an array
     chi_sqr_list = [chi_sqr(stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err), chi_sqr(stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err), chi_sqr(stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err), chi_sqr(stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err)]
     
-    print(chi_sqr_list)
+    #print(chi_sqr_list)
     #create a matching "x-array" of xSolar abundances i.e. [0, 1/3, 1, 3]
     x_list = [0.0, 1/3, 1.0, 3.0]
     
@@ -274,16 +247,21 @@ def calc_abundance(star_num, star_line_list, solar_line_list, snip_width, abunda
     parabola = np.poly1d(p_coeff)
     
     #find the minimum of the parabola
-    fit_min = optimize.fmin(parabola, abundance_guess)
+    fit_min, fit_min_val, num_its, f_evals, warn_flag = optimize.fmin(parabola, abundance_guess, full_output = True)
+    #find where polynomial fit = fit_min_val + 1
+    err_bounds = np.roots(parabola - fit_min_val - 1)
+    abundance_err = np.abs(err_bounds[1] - err_bounds[0]) / 2
     fit_min_dex = np.log10(fit_min)
+    abundance_err_dex = abundance_err / fit_min #err through a log: log(x+dx) = log(x) + dx/x
     
     #plot if option plot= True
     if (plot == True):
         plt.figure()
-        plt.title("$\chi^2$ Fit")
+        plt.title("$\chi^2$ Fit: " + label)
         plt.xlabel("xSolar Abundance")
         plt.ylabel("$\chi^2$")
         plt.scatter(x_list, chi_sqr_list, marker = 'o', label = "$\chi^2$ Values")
+        plt.scatter(err_bounds, parabola(err_bounds), color = "r", marker = "x")
         plt.plot(np.linspace(0, 3, 1000), parabola(np.linspace(0, 3, 1000)), label = "Data Fit")
         plt.plot(fit_min, parabola(fit_min), marker = "X", label = ("min @ x = %s" % fit_min)) #different color than previous
         plt.legend()
@@ -291,9 +269,38 @@ def calc_abundance(star_num, star_line_list, solar_line_list, snip_width, abunda
     else:
         pass
     
-    return fit_min, fit_min_dex
+    return np.round(fit_min, 2), np.round(fit_min_dex, 2), np.round(abundance_err, 2), np.round(abundance_err_dex[0], 2)
 
-velocity_shifts = [1.97337, 0.944558, 0.600705, 0.94817, 0.772493, 0.943784] #add to velocity grid of stacked absorption lines
+
+#Write a function to automate the abundance plots i.e. stellar stacked absorption lines + 4 model stacked lines
+def abundance_plot(star_num, line_list, solar_line_list, star_skiplist, label = "HIP ###"):
+    star_lines = useable_lines(line_list, star_skiplist)
+    sun_lines = useable_lines(solar_line_list, star_skiplist)
+    
+    stack_vel, stack_flux, stack_err = stack_data(star_num, star_lines, snip_width)
+    slant = de_slant(stack_vel, stack_flux)
+    
+    stack_vel_mod1, stack_flux_mod1 = stack_data(96, sun_lines, snip_width)
+    stack_vel_mod2, stack_flux_mod2 = stack_data(97, sun_lines, snip_width)
+    stack_vel_mod3, stack_flux_mod3 = stack_data(98, sun_lines, snip_width)
+    stack_vel_mod4, stack_flux_mod4 = stack_data(99, sun_lines, snip_width)
+    
+    plt.figure()
+    plt.ylim(0.91, 1.02)
+    plt.xlim(-15, 15)
+    plt.plot(stack_vel, stack_flux / slant(stack_vel), label = label, linewidth = 3)
+    plt.plot(stack_vel_mod1, stack_flux_mod1, linestyle='--', label = "0x Solar $^{13}$CO")
+    plt.plot(stack_vel_mod2, stack_flux_mod2, linestyle='--', label = "1/3x Solar $^{13}$CO")
+    plt.plot(stack_vel_mod3, stack_flux_mod3, linestyle='--', label = "Solar $^{13}$CO")
+    plt.plot(stack_vel_mod4, stack_flux_mod4, linestyle='--', label = "3x Solar $^{13}$CO")
+    plt.errorbar(stack_vel, stack_flux / slant(stack_vel), yerr = stack_err / slant(stack_vel), fmt = 'none', linewidth = 0.5, color = "black")
+    plt.xlabel("Velocity (km/s)")
+    plt.ylabel("Normalized Flux Intensity")
+    plt.axvline(x = 0, color= 'k', linestyle='--')
+    plt.legend()
+    return
+
+velocity_shifts = [1.97337, 0.944558, 0.600705 - 0.425, 0.94817 - 0.455, 0.772493 - 0.88, 0.943784 - 0.845] #add to velocity grid of stacked absorption lines; + moves spectrum right, - moves left
 
 #plot for sun using solar skip_list
 solar_skip_list = [0, 1, 2, 6, 12, 14, 15, 16, 19, 21, 23, 25, 26, 27, 29, 32, 33]
@@ -302,185 +309,71 @@ sun_13_CO_lines = useable_lines(wl_13_CO, solar_skip_list)
 
 #star 1: HIP 102040
 star1_skiplist = [8, 11, 12, 24, 25]
-star1_13_CO_lines = useable_lines(wl_13_CO, star1_skiplist)
+abundance_plot(1, wl_13_CO, sun_13_CO_lines, star1_skiplist, label = "HIP 102040")
 
-stack_vel1, stack_flux1, stack_err1 = stack_data(1, star1_13_CO_lines, snip_width)
-sc1 = de_slant(stack_vel1, stack_flux1)
-
-star1_useable_sun_lines = useable_lines(sun_13_CO_lines, star1_skiplist)
-stack_vel_sun1_mod1, stack_flux_sun1_mod1 = stack_data(96, star1_useable_sun_lines, snip_width)
-stack_vel_sun1_mod2, stack_flux_sun1_mod2 = stack_data(97, star1_useable_sun_lines, snip_width)
-stack_vel_sun1_mod3, stack_flux_sun1_mod3 = stack_data(98, star1_useable_sun_lines, snip_width)
-stack_vel_sun1_mod4, stack_flux_sun1_mod4 = stack_data(99, star1_useable_sun_lines, snip_width)
-
-plt.figure()
-#plt.title("Stacked 13CO Line: HIP 102040")
-plt.ylim(0.91, 1.02)
-plt.xlim(-15, 15)
-plt.plot(stack_vel1, stack_flux1 / sc1(stack_vel1), label = "HIP 102040", linewidth = 3)
-#plt.plot(stack_vel_sun1_mod1, stack_flux_sun1_mod1 - (np.max(stack_flux_sun1_mod1) - 1), label = "Solar Model 0x 13CO")
-plt.plot(stack_vel_sun1_mod2, stack_flux_sun1_mod2, linestyle='--', label = "1/3x Solar $^{13}$CO")
-plt.plot(stack_vel_sun1_mod3, stack_flux_sun1_mod3, linestyle='--', label = "Solar $^{13}$CO")
-plt.plot(stack_vel_sun1_mod4, stack_flux_sun1_mod4, linestyle='--', label = "3x Solar $^{13}$CO")
-plt.xlabel("Velocity (km/s)")
-plt.ylabel("Normalized Flux Intensity")
-plt.axvline(x = 0, color= 'k', linestyle='--')
-plt.legend()
-
-fit_min1, fit_min_dex1 = calc_abundance(1, star1_13_CO_lines, star1_useable_sun_lines, snip_width, 1.0, plot=True)
+fit_min1, fit_min_dex1, ab_err1, ab_err_dex1 = calc_abundance(1, wl_13_CO, sun_13_CO_lines, star1_skiplist, snip_width, 1.0, plot=True, label = "HIP 102040")
 print("HIP 102040 has a 13CO abundance of " + str(fit_min1) + " xSolar or " + str(fit_min_dex1) + " dex \n")
 
 
 #star 2: HIP 29432
 star2_skiplist = [8, 10, 11, 12, 15, 18, 19, 23, 24, 25, 27, 32]
-star2_13_CO_lines = useable_lines(wl_13_CO, star2_skiplist)
+abundance_plot(2, wl_13_CO, sun_13_CO_lines, star2_skiplist, label = "HIP 29432")
 
-stack_vel2, stack_flux2, stack_err2 = stack_data(2, star2_13_CO_lines, snip_width)
-sc2 = de_slant(stack_vel2, stack_flux2)
-
-star2_useable_sun_lines = useable_lines(sun_13_CO_lines, star2_skiplist)
-stack_vel_sun2_mod1, stack_flux_sun2_mod1 = stack_data(96, star2_useable_sun_lines, snip_width)
-stack_vel_sun2_mod2, stack_flux_sun2_mod2 = stack_data(97, star2_useable_sun_lines, snip_width)
-stack_vel_sun2_mod3, stack_flux_sun2_mod3 = stack_data(98, star2_useable_sun_lines, snip_width)
-stack_vel_sun2_mod4, stack_flux_sun2_mod4 = stack_data(99, star2_useable_sun_lines, snip_width)
-
-plt.figure()
-#plt.title("Stacked 13CO Line: HIP 29432")
-plt.ylim(0.91, 1.02)
-plt.xlim(-15, 15)
-plt.plot(stack_vel2, stack_flux2 / sc2(stack_vel2), label = "HIP 29432", linewidth = 3)
-#plt.plot(stack_vel_sun2_mod1, stack_flux_sun2_mod1 - (np.max(stack_flux_sun2_mod1) - 1), label = "Solar Model 0x 13CO")
-plt.plot(stack_vel_sun2_mod2, stack_flux_sun2_mod2, linestyle='--', label = "1/3x Solar $^{13}$CO")
-plt.plot(stack_vel_sun2_mod3, stack_flux_sun2_mod3, linestyle='--', label = "Solar $^{13}$CO")
-plt.plot(stack_vel_sun2_mod4, stack_flux_sun2_mod4, linestyle='--', label = "3x Solar $^{13}$CO")
-plt.xlabel("Velocity (km/s)")
-plt.ylabel("Normalized Flux Intensity")
-plt.axvline(x = 0, color= 'k', linestyle='--')
-plt.legend()
-
-fit_min2, fit_min_dex2 = calc_abundance(2, star2_13_CO_lines, star2_useable_sun_lines, snip_width, 1.55, plot=True)
+fit_min2, fit_min_dex2, ab_err2, ab_err_dex2 = calc_abundance(2, wl_13_CO, sun_13_CO_lines, star2_skiplist, snip_width, 1.55, plot=True, label = "HIP 29432")
 print("HIP 29432 has a 13CO abundance of " + str(fit_min2) + " xSolar or " + str(fit_min_dex2) + " dex \n")
 
 
 #star 3: HIP 42333
 star3_skiplist = [11, 12, 24, 25]
-star3_13_CO_lines = useable_lines(wl_13_CO, star3_skiplist)
+abundance_plot(3, wl_13_CO, sun_13_CO_lines, star3_skiplist, label = "HIP 42333")
 
-stack_vel3, stack_flux3, stack_err3 = stack_data(3, star3_13_CO_lines, snip_width)
-sc3 = de_slant(stack_vel3, stack_flux3)
-
-star3_useable_sun_lines = useable_lines(sun_13_CO_lines, star3_skiplist)
-stack_vel_sun3_mod1, stack_flux_sun3_mod1 = stack_data(96, star3_useable_sun_lines, snip_width)
-stack_vel_sun3_mod2, stack_flux_sun3_mod2 = stack_data(97, star3_useable_sun_lines, snip_width)
-stack_vel_sun3_mod3, stack_flux_sun3_mod3 = stack_data(98, star3_useable_sun_lines, snip_width)
-stack_vel_sun3_mod4, stack_flux_sun3_mod4 = stack_data(99, star3_useable_sun_lines, snip_width)
-
-plt.figure()
-#plt.title("Stacked 13CO Line: HIP 42333")
-plt.ylim(0.91, 1.02)
-plt.xlim(-15, 15)
-plt.plot(stack_vel3, stack_flux3 / sc3(stack_vel3), label = "HIP 42333", linewidth = 3)
-#plt.plot(stack_vel_sun3_mod1, stack_flux_sun3_mod1 - (np.max(stack_flux_sun3_mod1) - 1), label = "Solar Model 0x 13CO")
-plt.plot(stack_vel_sun3_mod2, stack_flux_sun3_mod2, linestyle='--', label = "1/3x Solar $^{13}$CO")
-plt.plot(stack_vel_sun3_mod3, stack_flux_sun3_mod3, linestyle='--', label = "Solar $^{13}$CO")
-plt.plot(stack_vel_sun3_mod4, stack_flux_sun3_mod4, linestyle='--', label = "3x Solar $^{13}$CO")
-plt.xlabel("Velocity (km/s)")
-plt.xlabel("Velocity (km/s)")
-plt.ylabel("Normalized Flux Intensity")
-plt.axvline(x = 0, color= 'k', linestyle='--')
-plt.legend()
-
-fit_min3, fit_min_dex3 = calc_abundance(3, star3_13_CO_lines, star3_useable_sun_lines, snip_width, 1.5, plot=True)
+fit_min3, fit_min_dex3, ab_err3, ab_err_dex3 = calc_abundance(3, wl_13_CO, sun_13_CO_lines, star3_skiplist, snip_width, 1.5, plot=True, label = "HIP 42333")
 print("HIP 42333 has a 13CO abundance of " + str(fit_min3) + " xSolar or " + str(fit_min_dex3) + " dex \n")
 
 
 #star 4: HIP 77052
 star4_skiplist = [2, 11, 12, 23, 24, 25]
-star4_13_CO_lines = useable_lines(wl_13_CO, star4_skiplist)
-
-stack_vel4, stack_flux4, stack_err4 = stack_data(4, star4_13_CO_lines, snip_width)
-sc4 = de_slant(stack_vel4, stack_flux4)
-
 star4_useable_sun_lines = useable_lines(sun_13_CO_lines, star4_skiplist)
-stack_vel_sun4_mod1, stack_flux_sun4_mod1 = stack_data(96, star4_useable_sun_lines, snip_width)
-stack_vel_sun4_mod2, stack_flux_sun4_mod2 = stack_data(97, star4_useable_sun_lines, snip_width)
-stack_vel_sun4_mod3, stack_flux_sun4_mod3 = stack_data(98, star4_useable_sun_lines, snip_width)
-stack_vel_sun4_mod4, stack_flux_sun4_mod4 = stack_data(99, star4_useable_sun_lines, snip_width)
+abundance_plot(4, wl_13_CO, sun_13_CO_lines, star4_skiplist, label = "HIP 77052")
 
-plt.figure()
-#plt.title("Stacked 13CO Line: HIP 77052")
-plt.ylim(0.91, 1.02)
-plt.xlim(-15, 15)
-plt.plot(stack_vel4, stack_flux4 / sc4(stack_vel4), label = "HIP 77052", linewidth = 3)
-#plt.plot(stack_vel_sun4_mod1, stack_flux_sun4_mod1 - (np.max(stack_flux_sun4_mod1) - 1), label = "Solar Model 0x 13CO")
-plt.plot(stack_vel_sun4_mod2, stack_flux_sun4_mod2, linestyle='--', label = "1/3x Solar $^{13}$CO")
-plt.plot(stack_vel_sun4_mod3, stack_flux_sun4_mod3, linestyle='--', label = "Solar $^{13}$CO")
-plt.plot(stack_vel_sun4_mod4, stack_flux_sun4_mod4, linestyle='--', label = "3x Solar $^{13}$CO")
-plt.xlabel("Velocity (km/s)")
-plt.ylabel("Normalized Flux Intensity")
-plt.axvline(x = 0, color= 'k', linestyle='--')
-plt.legend()
-
-fit_min4, fit_min_dex4 = calc_abundance(4, star4_13_CO_lines, star4_useable_sun_lines, snip_width, 1.5, plot=True)
+fit_min4, fit_min_dex4, ab_err4, ab_err_dex4 = calc_abundance(4, wl_13_CO, sun_13_CO_lines, star4_skiplist, snip_width, 1.5, plot=True, label = "HIP 77052")
 print("HIP 77052 has a 13CO abundance of " + str(fit_min4) + " xSolar or " + str(fit_min_dex4) + " dex \n")
 
 #star 5: HIP 79672
 star5_skiplist = [2, 11, 12, 15, 23, 24, 25, 33]
-star5_13_CO_lines = useable_lines(wl_13_CO, star5_skiplist)
-
-stack_vel5, stack_flux5, stack_err5 = stack_data(5, star5_13_CO_lines, snip_width)
-sc5 = de_slant(stack_vel5, stack_flux5)
-
 star5_useable_sun_lines = useable_lines(sun_13_CO_lines, star5_skiplist)
-stack_vel_sun5_mod1, stack_flux_sun5_mod1 = stack_data(96, star5_useable_sun_lines, snip_width)
-stack_vel_sun5_mod2, stack_flux_sun5_mod2 = stack_data(97, star5_useable_sun_lines, snip_width)
-stack_vel_sun5_mod3, stack_flux_sun5_mod3 = stack_data(98, star5_useable_sun_lines, snip_width)
-stack_vel_sun5_mod4, stack_flux_sun5_mod4 = stack_data(99, star5_useable_sun_lines, snip_width)
+abundance_plot(5, wl_13_CO, sun_13_CO_lines, star5_skiplist, label = "HIP 79672")
 
-plt.figure()
-#plt.title("Stacked 13CO Line: HIP 79672")
-plt.ylim(0.91, 1.02)
-plt.xlim(-15, 15)
-plt.plot(stack_vel5, stack_flux5 / sc5(stack_vel5), label = "HIP 79672", linewidth = 3)
-#plt.plot(stack_vel_sun5_mod1, stack_flux_sun5_mod1 - (np.max(stack_flux_sun5_mod1) - 1), label = "Solar Model 0x 13CO")
-plt.plot(stack_vel_sun5_mod2, stack_flux_sun5_mod2, linestyle='--', label = "1/3x Solar $^{13}$CO")
-plt.plot(stack_vel_sun5_mod3, stack_flux_sun5_mod3, linestyle='--', label = "Solar $^{13}$CO")
-plt.plot(stack_vel_sun5_mod4, stack_flux_sun5_mod4, linestyle='--', label = "3x Solar $^{13}$CO")
-plt.xlabel("Velocity (km/s)")
-plt.ylabel("Normalized Flux Intensity")
-plt.axvline(x = 0, color= 'k', linestyle='--')
-plt.legend()
 
-fit_min5, fit_min_dex5 = calc_abundance(5, star5_13_CO_lines, star5_useable_sun_lines, snip_width, 0.8, plot=True)
+fit_min5, fit_min_dex5, ab_err5, ab_err_dex5 = calc_abundance(5, wl_13_CO, sun_13_CO_lines, star5_skiplist, snip_width, 0.8, plot=True, label = "HIP 79672")
 print("HIP 79672 has a 13CO abundance of " + str(fit_min5) + " xSolar or " + str(fit_min_dex5) + " dex \n")
 
 
 #star 6: HIP 85042
 star6_skiplist = [8, 11, 12, 24, 25]
-star6_13_CO_lines = useable_lines(wl_13_CO, star6_skiplist)
-
-stack_vel6, stack_flux6, stack_err6 = stack_data(6, star6_13_CO_lines, snip_width)
-sc6 = de_slant(stack_vel6, stack_flux6)
-
 star6_useable_sun_lines = useable_lines(sun_13_CO_lines, star6_skiplist)
-stack_vel_sun6_mod1, stack_flux_sun6_mod1 = stack_data(96, star6_useable_sun_lines, snip_width)
-stack_vel_sun6_mod2, stack_flux_sun6_mod2 = stack_data(97, star6_useable_sun_lines, snip_width)
-stack_vel_sun6_mod3, stack_flux_sun6_mod3 = stack_data(98, star6_useable_sun_lines, snip_width)
-stack_vel_sun6_mod4, stack_flux_sun6_mod4 = stack_data(99, star6_useable_sun_lines, snip_width)
+abundance_plot(6, wl_13_CO, sun_13_CO_lines, star6_skiplist, label = "HIP 85042")
+
+fit_min6, fit_min_dex6, ab_err6, ab_err_dex6 = calc_abundance(6, wl_13_CO, sun_13_CO_lines, star6_skiplist, snip_width, 1.7, plot=True, label = "HIP 85042")
+print("HIP 85042 has a 13CO abundance of " + str(fit_min6) + " +/- " + str(ab_err6) + " xSolar or " + str(fit_min_dex6) + " dex \n")
 
 plt.figure()
-#plt.title("Stacked 13CO Line: HIP 85042")
-plt.ylim(0.91, 1.02)
-plt.xlim(-15, 15)
-plt.plot(stack_vel6, stack_flux6 / sc6(stack_vel6), label = "HIP 85042", linewidth = 3)
-#plt.plot(stack_vel_sun6_mod1, stack_flux_sun6_mod1 - (np.max(stack_flux_sun6_mod1) - 1), label = "Solar Model 0x 13CO")
-plt.plot(stack_vel_sun6_mod2, stack_flux_sun6_mod2, linestyle='--', label = "1/3x Solar $^{13}$CO")
-plt.plot(stack_vel_sun6_mod3, stack_flux_sun6_mod3, linestyle='--', label = "Solar $^{13}$CO")
-plt.plot(stack_vel_sun6_mod4, stack_flux_sun6_mod4, linestyle='--', label = "3x Solar $^{13}$CO")
-plt.xlabel("Velocity (km/s)")
-plt.ylabel("Normalized Flux Intensity")
-plt.axvline(x = 0, color= 'k', linestyle='--')
-plt.legend()
+plt.title("$^{13}$CO Abundance vs. Stellar Age")
+plt.xlabel("Stellar Age (Gyr)")
+plt.ylabel("Calculated Abundance (dex)")
+plt.scatter([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], marker = "o")
+plt.errorbar([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], yerr = [ab_err_dex1, ab_err_dex2, ab_err_dex3, ab_err_dex4, ab_err_dex5, ab_err_dex6], fmt = 'none', linewidth = 0.5, color = "black")
+plt.errorbar([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], xerr = [0.91, 0.71, 0.52, 0.91, 0.39, 0.62], fmt = 'none', linewidth = 0.5, color = "black")
+age_abundance_fit = np.polyfit([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], deg = 1)
+#age_abundance_line = np.poly1d(age_abundance_fit)
+plt.plot(np.linspace(0, 7, 1000), age_abundance_fit[0]*(np.linspace(0, 7, 1000)) + age_abundance_fit[1])
 
-fit_min6, fit_min_dex6 = calc_abundance(6, star6_13_CO_lines, star6_useable_sun_lines, snip_width, 1.7, plot=True)
-print("HIP 85042 has a 13CO abundance of " + str(fit_min6) + " xSolar or " + str(fit_min_dex6) + " dex \n")
+print("xSolar abundances: ")
+print(fit_min1, fit_min2, fit_min3, fit_min4, fit_min5, fit_min6)
+print("Uncertainties: ")
+print(ab_err1, ab_err2, ab_err3, ab_err4, ab_err5, ab_err6)
+
+print("Abundances (dex): ")
+print(fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6)
+print("Uncertainties: ")
+print(ab_err_dex1, ab_err_dex2, ab_err_dex3, ab_err_dex4, ab_err_dex5, ab_err_dex6)
