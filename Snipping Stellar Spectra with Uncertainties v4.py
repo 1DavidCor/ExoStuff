@@ -14,15 +14,21 @@ from scipy import optimize
 
 snip_width_13CO = 0.0006
 snip_width_C18O = 0.00015
-chi_sqr_snipwidth = 5
 
-#base directory
-base_dir = 'C:\\Users\\d338c921\\Desktop\\M-band_Spectra_of_Solar_Twins\\'
-#base_dir_solar_models = 'C:\\Users\\there\\Desktop\\M-band_Spectra_of_Solar_Twins\\Solar_Models\\'
+#set base directory: Laptop
+base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
+base_dir_spect = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\ST_spectra\\'
+base_dir_models = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\Solar_Models\\'
+
+#set base directory: Desktop
+# base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
+# base_dir_spect = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\ST_spectra\\'
+# base_dir_models = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\Solar_Models\\'
+
 
 obj_list = []
 
-for root, dirs, files in os.walk(base_dir):
+for root, dirs, files in os.walk(base_dir_spect):
     for file in files:
         if file.endswith('final.fits'):
             obj_list.append(file)
@@ -69,7 +75,7 @@ def star_data(star):
     if star in [1, 2, 3, 4, 5, 6]:
     #star = 1, 2, 3, 4, 5, 6
         choose_file = int(star - 1)
-        obj_path = base_dir + obj_list[choose_file]
+        obj_path = base_dir_spect + obj_list[choose_file]
         spect = pyfits.getdata(obj_path)
         obj_name = pyfits.getval(obj_path, 'OBJECT')
         
@@ -90,28 +96,28 @@ def star_data(star):
 def solar_data(model_num):
     ###13CO models
     if(model_num == 1):
-        sun = pyfits.getdata(base_dir + "Solar_Models\\" + "nlte5780_4.44.0x.fromsun.hires.spec.fits")
+        sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.0x.fromsun.hires.spec.fits")
         wl = sun[0,:] / 10000
         sun_flux_log = sun[1,:] #log base 10 of flux
         sun_flux = 10**sun_flux_log
         flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
 
     elif(model_num == 2):
-        sun = pyfits.getdata(base_dir + "Solar_Models\\" + "nlte5780_4.44.0.3x.fromsun.hires.spec.fits")
+        sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.0.3x.fromsun.hires.spec.fits")
         wl = sun[0,:] / 10000
         sun_flux_log = sun[1,:] #log base 10 of flux
         sun_flux = 10**sun_flux_log
         flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
 
     elif(model_num == 3):
-        sun = pyfits.getdata(base_dir + "Solar_Models\\" + "nlte5780_4.44.1x.fromsun.hires.spec.fits")
+        sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.1x.fromsun.hires.spec.fits")
         wl = sun[0,:] / 10000
         sun_flux_log = sun[1,:] #log base 10 of flux
         sun_flux = 10**sun_flux_log
         flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
 
     elif(model_num == 4):
-        sun = pyfits.getdata(base_dir + "Solar_Models\\" + "nlte5780_4.44.3x.fromsun.hires.spec.fits")
+        sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.3x.fromsun.hires.spec.fits")
         wl = sun[0,:] / 10000
         sun_flux_log = sun[1,:] #log base 10 of flux
         sun_flux = 10**sun_flux_log
@@ -119,7 +125,7 @@ def solar_data(model_num):
      
     ###C18O models
     elif(model_num == 5): 
-        filename = base_dir + "Solar_Models\\" + "nlte5.78e+03.4.44e+00.0.0.O18=0.00e+00x.fromsun.hires.7.csv"
+        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=0.00e+00x.fromsun.hires.7.csv"
         sun = pd.read_csv(filename, sep = ' ')
         sun = (pd.DataFrame.to_numpy(sun)).T
         wl = sun[0] / 10000
@@ -128,7 +134,7 @@ def solar_data(model_num):
         flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
         
     elif(model_num == 6): 
-        filename = base_dir + "Solar_Models\\" + "nlte5.78e+03.4.44e+00.0.0.O18=3.00e-01x.fromsun.hires.7.csv"
+        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=3.00e-01x.fromsun.hires.7.csv"
         sun = pd.read_csv(filename, sep = ' ')
         sun = (pd.DataFrame.to_numpy(sun)).T
         wl = sun[0] / 10000
@@ -137,7 +143,7 @@ def solar_data(model_num):
         flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
         
     elif(model_num == 7): 
-        filename = base_dir + "Solar_Models\\" + "nlte5.78e+03.4.44e+00.0.0.O18=5.60e-01x.fromsun.hires.7.csv"
+        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=5.60e-01x.fromsun.hires.7.csv"
         sun = pd.read_csv(filename, sep = ' ')
         sun = (pd.DataFrame.to_numpy(sun)).T
         wl = sun[0] / 10000
@@ -146,7 +152,7 @@ def solar_data(model_num):
         flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
         
     elif(model_num == 8): 
-        filename = base_dir + "Solar_Models\\" + "nlte5.78e+03.4.44e+00.0.0.O18=1.00e+00x.fromsun.hires.7.csv"
+        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=1.00e+00x.fromsun.hires.7.csv"
         sun = pd.read_csv(filename, sep = ' ')
         sun = (pd.DataFrame.to_numpy(sun)).T
         wl = sun[0] / 10000
@@ -155,7 +161,7 @@ def solar_data(model_num):
         flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
         
     elif(model_num == 9): 
-        filename = base_dir + "Solar_Models\\" + "nlte5.78e+03.4.44e+00.0.0.O18=1.78e+00x.fromsun.hires.7.csv"
+        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=1.78e+00x.fromsun.hires.7.csv"
         sun = pd.read_csv(filename, sep = ' ')
         sun = (pd.DataFrame.to_numpy(sun)).T
         wl = sun[0] / 10000
@@ -164,7 +170,7 @@ def solar_data(model_num):
         flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
         
     elif(model_num == 10): 
-        filename = base_dir + "Solar_Models\\" + "nlte5.78e+03.4.44e+00.0.0.O18=3.00e+00x.fromsun.hires.7.csv"
+        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=3.00e+00x.fromsun.hires.7.csv"
         sun = pd.read_csv(filename, sep = ' ')
         sun = (pd.DataFrame.to_numpy(sun)).T
         wl = sun[0] / 10000
@@ -303,9 +309,9 @@ def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip
     line_list = useable_lines(full_line_list, np.append(star_skiplist, solar_skiplist))
     stack_vel, stack_flux, stack_err = stack_data(star_num, line_list, snip_width, CO_species, model = False)
     #SLANT CORRECTION!!!
-    # slant = de_slant(stack_vel, stack_flux)
-    # stack_flux = stack_flux / slant(stack_vel)
-    # stack_err = stack_err / slant(stack_vel)
+    slant = de_slant(stack_vel, stack_flux)
+    stack_flux = stack_flux / slant(stack_vel)
+    stack_err = stack_err / slant(stack_vel)
     
     if CO_species == "13CO":
         stack_vel1, stack_flux1 = stack_data(1, line_list, snip_width, CO_species, model = True)
