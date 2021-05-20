@@ -16,14 +16,13 @@ snip_width_13CO = 0.0006
 snip_width_C18O = 0.00015
 
 #set base directory: Laptop
-base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
-base_dir_spect = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\ST_spectra\\'
-base_dir_models = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\Solar_Models\\'
+# base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
 
 #set base directory: Desktop
-# base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
-# base_dir_spect = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\ST_spectra\\'
-# base_dir_models = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\Solar_Models\\'
+base_dir = 'C:\\Users\\d338c921\\GitHub\\ExoStuff'
+
+base_dir_spect = base_dir + '\\ST_spectra\\'
+base_dir_models = base_dir + '\\Solar_Models\\'
 
 
 obj_list = []
