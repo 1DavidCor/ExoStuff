@@ -253,7 +253,7 @@ def stack_data(star, useable_line_list, snip_width, CO_species, model):
         if CO_species == "13CO":
             stack_vel = np.mean((snips_wl - useable_line_list) / useable_line_list * 3e5, axis = 1) + velocity_shifts[star - 1]
         elif CO_species == "C18O":
-            stack_vel = np.mean((snips_wl - useable_line_list) / useable_line_list * 3e5, axis = 1)
+            stack_vel = np.mean((snips_wl - useable_line_list) / useable_line_list * 3e5, axis = 1) + velocity_shifts_C18O[star - 1]
         stack_flux = np.average(snips_flux_norm, axis = 1, weights = snips_err**-2) ###weighted average using weights 1/variance
         stack_err = np.sqrt(1./ (snips_err**-2).sum(axis = 1))
         
@@ -277,10 +277,15 @@ def de_slant(stack_vel, stack_flux):
 
 #####################################################################################################################################################################
 #Write a function to calculate chi-squared values
-def chi_sqr(star_num, stack_vel_obs, stack_vel_model, stack_flux_obs, stack_flux_model, err):
+def chi_sqr(star_num, stack_vel_obs, stack_vel_model, stack_flux_obs, stack_flux_model, err, CO_species):
     #custom chi_sqr snip widths and line centers
-    snip_bounds_L = [-5.864, -3.405, -4.429, -4.016, -5.227, -4.144]
-    snip_bounds_R = [6.118, 3.627, 6.235, 4.444, 4.273, 2.867]
+    if CO_species == "13CO":
+        snip_bounds_L = [-5.864, -3.405, -4.429, -4.016, -5.227, -4.144]
+        snip_bounds_R = [6.118, 3.627, 6.235, 4.444, 4.273, 2.867]
+    elif CO_species == "C18O":
+        snip_bounds_L = [-4.84, -5.2, -3.59, -3.55, -3.7, -4.64]
+        snip_bounds_R = [4.4, 4.8, 3.91, 3.2, 3.67, 4.64]
+        
     chi_sqr_snipwidth = snip_bounds_R[star_num - 1] - snip_bounds_L[star_num - 1]
     snip_center = snip_bounds_R[star_num - 1] - (chi_sqr_snipwidth / 2)
     
@@ -317,9 +322,10 @@ def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip
         stack_vel2, stack_flux2 = stack_data(2, line_list, snip_width, CO_species, model = True)
         stack_vel3, stack_flux3 = stack_data(3, line_list, snip_width, CO_species, model = True)
         stack_vel4, stack_flux4 = stack_data(4, line_list, snip_width, CO_species, model = True)
+        label = "Numerical Abundance Calculation: $\chi^2$ Test Interp: 13CO"
             
         #calculate 4 chi_sqr values and put them in an array
-        chi_sqr_list = [chi_sqr(star_num, stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err), chi_sqr(star_num, stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err), chi_sqr(star_num, stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err), chi_sqr(star_num, stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err)]
+        chi_sqr_list = [chi_sqr(star_num, stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err, CO_species = "13CO"), chi_sqr(star_num, stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err, CO_species = "13CO"), chi_sqr(star_num, stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err, CO_species = "13CO"), chi_sqr(star_num, stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err, CO_species = "13CO")]
         
         #print(chi_sqr_list)
         #create a matching "x-array" of xSolar abundances i.e. [0, 1/3, 1, 3]
@@ -332,9 +338,10 @@ def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip
         stack_vel4, stack_flux4 = stack_data(8, line_list, snip_width, CO_species, model = True)
         stack_vel5, stack_flux5 = stack_data(9, line_list, snip_width, CO_species, model = True)
         stack_vel6, stack_flux6 = stack_data(10, line_list, snip_width, CO_species, model = True)
+        label = "Numerical Abundance Calculation: $\chi^2$ Test Interp: C18O"
             
         #calculate 6 chi_sqr values and put them in an array
-        chi_sqr_list = [chi_sqr(star_num, stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err), chi_sqr(star_num, stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err), chi_sqr(star_num, stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err), chi_sqr(star_num, stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err), chi_sqr(star_num, stack_vel, stack_vel5, stack_flux, stack_flux5, stack_err), chi_sqr(star_num, stack_vel, stack_vel6, stack_flux, stack_flux6, stack_err)]
+        chi_sqr_list = [chi_sqr(star_num, stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err, CO_species = "C18O"), chi_sqr(star_num, stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err, CO_species = "C18O"), chi_sqr(star_num, stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err, CO_species = "C18O"), chi_sqr(star_num, stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err, CO_species = "C18O"), chi_sqr(star_num, stack_vel, stack_vel5, stack_flux, stack_flux5, stack_err, CO_species = "C18O"), chi_sqr(star_num, stack_vel, stack_vel6, stack_flux, stack_flux6, stack_err, CO_species = "C18O")]
         
         #print(chi_sqr_list)
         #create a matching "x-array" of xSolar abundances i.e. [0, 1/3, 1, 3]
@@ -355,10 +362,10 @@ def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip
     #plot if option plot= True
     if (plot == True):
         plt.figure()
-        plt.title("$\chi^2$ Fit: " + label)
+        plt.title(label)
         plt.xlabel("xSolar Abundance")
         plt.ylabel("$\chi^2$")
-        plt.scatter(x_list, chi_sqr_list, marker = 'o', label = "$\chi^2$ Values")
+        plt.scatter(x_list, chi_sqr_list, marker = 'o', label = "$\chi^2$ Interp")
         plt.scatter(err_bounds, parabola(err_bounds), color = "r", marker = "x")
         plt.plot(np.linspace(0, 3, 1000), parabola(np.linspace(0, 3, 1000)), label = "Data Fit")
         plt.plot(fit_min, parabola(fit_min), marker = "X", label = ("min @ x = %s" % np.round(fit_min, 2))) #different color than previous
@@ -391,6 +398,7 @@ def abundance_plot(star_num, full_line_list, solar_skiplist, star_skiplist, snip
         label4 = "3x Solar $^{13}$CO"
         
         plt.figure()
+        plt.title("Abundance Plot: " + label + ": 13CO")
         plt.ylim(0.91, 1.02)
         plt.xlim(-15, 15)
         plt.plot(stack_vel, stack_flux / slant(stack_vel), label = label, linewidth = 3)
@@ -421,6 +429,7 @@ def abundance_plot(star_num, full_line_list, solar_skiplist, star_skiplist, snip
         label6 = "3x Solar C$^{18}$O"
         
         plt.figure()
+        plt.title("Abundance Plot: " + label + ": C18O")
         plt.ylim(0.94, 1.01)
         plt.xlim(-10, 10)
         plt.plot(stack_vel, stack_flux / slant(stack_vel), label = label, linewidth = 3)
@@ -449,7 +458,6 @@ sun_13_CO_lines = useable_lines(wl_13_CO, solar_skiplist)
 #star 1: HIP 102040
 star1_skiplist = [8, 11, 24]
 abundance_plot(1, wl_13_CO, solar_skiplist, star1_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 1")
-
 fit_min1, fit_min_dex1, ab_err1, ab_err_dex1 = calc_abundance(1, wl_13_CO, solar_skiplist, star1_skiplist, snip_width_13CO, 1.0, plot=True, CO_species = "13CO", label = "Solar Twin 1")
 print("HIP 102040 has a 13CO abundance of " + str(fit_min1) + " +/- " + str(ab_err1) + " xSolar or " + str(fit_min_dex1) + " dex \n")
 
@@ -457,7 +465,6 @@ print("HIP 102040 has a 13CO abundance of " + str(fit_min1) + " +/- " + str(ab_e
 #star 2: HIP 29432
 star2_skiplist = [8, 10, 11, 18, 24]
 abundance_plot(2, wl_13_CO, solar_skiplist, star2_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 2")
-
 fit_min2, fit_min_dex2, ab_err2, ab_err_dex2 = calc_abundance(2, wl_13_CO, solar_skiplist, star2_skiplist, snip_width_13CO, 1.55, plot=True, CO_species = "13CO", label = "Solar Twin 2")
 print("HIP 29432 has a 13CO abundance of " + str(fit_min2) + " +/- " + str(ab_err2) + " xSolar or " + str(fit_min_dex2) + " dex \n")
 
@@ -465,7 +472,6 @@ print("HIP 29432 has a 13CO abundance of " + str(fit_min2) + " +/- " + str(ab_er
 #star 3: HIP 42333
 star3_skiplist = [11, 24]
 abundance_plot(3, wl_13_CO, solar_skiplist, star3_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 3")
-
 fit_min3, fit_min_dex3, ab_err3, ab_err_dex3 = calc_abundance(3, wl_13_CO, solar_skiplist, star3_skiplist, snip_width_13CO, 1.5, plot=True, CO_species = "13CO", label = "Solar Twin 3")
 print("HIP 42333 has a 13CO abundance of " + str(fit_min3) + " +/- " + str(ab_err3) + " xSolar or " + str(fit_min_dex3) + " dex \n")
 
@@ -474,7 +480,6 @@ print("HIP 42333 has a 13CO abundance of " + str(fit_min3) + " +/- " + str(ab_er
 star4_skiplist = [11, 24]
 star4_useable_sun_lines = useable_lines(sun_13_CO_lines, star4_skiplist)
 abundance_plot(4, wl_13_CO, solar_skiplist, star4_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 4")
-
 fit_min4, fit_min_dex4, ab_err4, ab_err_dex4 = calc_abundance(4, wl_13_CO, solar_skiplist, star4_skiplist, snip_width_13CO, 1.5, plot=True, CO_species = "13CO", label = "Solar Twin 4")
 print("HIP 77052 has a 13CO abundance of " + str(fit_min4) + " +/- " + str(ab_err4) + " xSolar or " + str(fit_min_dex4) + " dex \n")
 
@@ -482,8 +487,6 @@ print("HIP 77052 has a 13CO abundance of " + str(fit_min4) + " +/- " + str(ab_er
 star5_skiplist = [11, 24]
 star5_useable_sun_lines = useable_lines(sun_13_CO_lines, star5_skiplist)
 abundance_plot(5, wl_13_CO, solar_skiplist, star5_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 5")
-
-
 fit_min5, fit_min_dex5, ab_err5, ab_err_dex5 = calc_abundance(5, wl_13_CO, solar_skiplist, star5_skiplist, snip_width_13CO, 0.8, plot=True, CO_species = "13CO", label = "Solar Twin 5")
 print("HIP 79672 has a 13CO abundance of " + str(fit_min5) + " +/- " + str(ab_err5) + " xSolar or " + str(fit_min_dex5) + " dex \n")
 
@@ -492,23 +495,10 @@ print("HIP 79672 has a 13CO abundance of " + str(fit_min5) + " +/- " + str(ab_er
 star6_skiplist = [8, 11, 24]
 star6_useable_sun_lines = useable_lines(sun_13_CO_lines, star6_skiplist)
 abundance_plot(6, wl_13_CO, solar_skiplist, star6_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 6")
-
 fit_min6, fit_min_dex6, ab_err6, ab_err_dex6 = calc_abundance(6, wl_13_CO, solar_skiplist, star6_skiplist, snip_width_13CO, 1.7, plot=True, CO_species = "13CO", label = "Solar Twin 6")
 print("HIP 85042 has a 13CO abundance of " + str(fit_min6) + " +/- " + str(ab_err6) + " xSolar or " + str(fit_min_dex6) + " dex \n")
 
-plt.figure()
-plt.title("$^{13}$CO Abundance vs. Stellar Age")
-plt.xlabel("Stellar Age (Gyr)")
-plt.ylabel("Calculated $^{13}$CO Abundance (dex)")
-plt.scatter(4.603, 0.0,  color = '#FF6700', marker = "o", label = "Sun")
-plt.scatter([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], marker = "o", label = "Solar Twins")
-plt.errorbar([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], yerr = [ab_err_dex1, ab_err_dex2, ab_err_dex3, ab_err_dex4, ab_err_dex5, ab_err_dex6], fmt = 'none', linewidth = 0.5, color = "black")
-plt.errorbar([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], xerr = [0.91, 0.71, 0.52, 0.91, 0.39, 0.62], fmt = 'none', linewidth = 0.5, color = "black")
-age_abundance_fit = np.polyfit([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], deg = 1)
-#age_abundance_line = np.poly1d(age_abundance_fit)
-#plt.plot(np.linspace(0, 7, 1000), age_abundance_fit[0]*(np.linspace(0, 7, 1000)) + age_abundance_fit[1])
-plt.legend()
-
+###
 print("xSolar abundances: ")
 print(fit_min1, fit_min2, fit_min3, fit_min4, fit_min5, fit_min6)
 print("Uncertainties: ")
@@ -518,6 +508,7 @@ print("Abundances (dex): ")
 print(fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6)
 print("Uncertainties: ")
 print(ab_err_dex1, ab_err_dex2, ab_err_dex3, ab_err_dex4, ab_err_dex5, ab_err_dex6)
+print("\n")
 
 
 ###################################################################################################################################################################
@@ -547,8 +538,8 @@ solar_skiplist_C18O = [7, 9, 11, 12, 13, 16, 17, 18, 19, 21, 22, 25, 26, 27, 30,
 
 #####################################################################################################################################################################
 #Use these lines to identify bad lines; change star_num and stellar_skiplist only
-# wl, flux, err = star_data(6)
-# C18O_lines = useable_lines(wl_C_18_O, np.append(solar_skiplist_C18O, [1, 6]))
+# wl, flux, err = star_data(1)
+# C18O_lines = useable_lines(wl_C_18_O, np.append(solar_skiplist_C18O, []))
 # snips_wl1, snips_flux1, snips_flux_norm1 = snip_spectrum_simp(C18O_lines, flux, wl, 0.0006, 50)
 # plt.figure()
 # plt.plot(snips_wl1, snips_flux1)
@@ -560,58 +551,76 @@ solar_skiplist_C18O = [7, 9, 11, 12, 13, 16, 17, 18, 19, 21, 22, 25, 26, 27, 30,
 # plt.plot(np.mean((snips_wl1 - C18O_lines) / C18O_lines * 3e5, axis = 1), np.mean(snips_flux1, axis = 1))
 
 #####################################################################################################################################################################
+snip_width_C18O = 0.0006 #make sure snip width is wide enough for deslant to do its thing!!!
+velocity_shifts_C18O = [0, -1.19, 0.405, 0, 0.79, 0.585]
 
-star1_C18O_skiplist = [6] #[0, 2, 5, 6, 15, 24] #strongest lines i.e. 15 and 24 are messy; so is line 6
+#star 1: HIP 102040
+star1_C18O_skiplist = [0, 2, 3, 6, 15, 24] #[0, 1, 3, 5, 10, 14, 15, 23, 28, 29] #[6] #[0, 2, 5, 6, 15, 24] #strongest lines i.e. 15 and 24 are messy; so is line 6
+abundance_plot(1, wl_C_18_O, solar_skiplist_C18O, star1_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 1")
+fit_min1_C18O, fit_min_dex1_C18O, ab_err1_C18O, ab_err_dex1_C18O = calc_abundance(1, wl_C_18_O, solar_skiplist_C18O, star1_C18O_skiplist, snip_width_C18O, 0.0, plot=True, CO_species = "C18O", label = "Solar Twin 1")
+print("HIP 102040 has a C18O abundance of " + str(fit_min1_C18O) + " +/- " + str(ab_err1_C18O) + " xSolar or " + str(fit_min_dex1_C18O) + " dex \n")
 
-star2_C18O_skiplist = [1, 15]
 
-star3_C18O_skiplist = [24] #24 optional; profile looked fine before it was removed
+#star 2: HIP 29432
+star2_C18O_skiplist = [0, 2, 3, 15, 24] #[0, 1, 2, 3, 5, 10, 14, 15, 23, 24, 28, 29]
+abundance_plot(2, wl_C_18_O, solar_skiplist_C18O, star2_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 2")
+fit_min2_C18O, fit_min_dex2_C18O, ab_err2_C18O, ab_err_dex2_C18O = calc_abundance(2, wl_C_18_O, solar_skiplist_C18O, star2_C18O_skiplist, snip_width_C18O, 3.0, plot=True, CO_species = "C18O", label = "Solar Twin 2")
+print("HIP 29432 has a C18O abundance of " + str(fit_min2_C18O) + " +/- " + str(ab_err2_C18O) + " xSolar or " + str(fit_min_dex2_C18O) + " dex \n")
 
-star4_C18O_skiplist = [14] #14 optional; profile looked fine before it was removed
 
+#star 3: HIP 42333
+star3_C18O_skiplist = [0, 2, 3, 15, 24] #[24] #24 optional; profile looked fine before it was removed
+abundance_plot(3, wl_C_18_O, solar_skiplist_C18O, star3_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 3")
+fit_min3_C18O, fit_min_dex3_C18O, ab_err3_C18O, ab_err_dex3_C18O = calc_abundance(3, wl_C_18_O, solar_skiplist_C18O, star3_C18O_skiplist, snip_width_C18O, 0.5, plot=True, CO_species = "C18O", label = "Solar Twin 3")
+print("HIP 42333 has a C18O abundance of " + str(fit_min3_C18O) + " +/- " + str(ab_err3_C18O) + " xSolar or " + str(fit_min_dex3_C18O) + " dex \n")
+
+
+#star 4: HIP 77052
+star4_C18O_skiplist = [0, 2, 3, 15, 24] #[14] #14 optional; profile looked fine before it was removed
+abundance_plot(4, wl_C_18_O, solar_skiplist_C18O, star4_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 4")
+fit_min4_C18O, fit_min_dex4_C18O, ab_err4_C18O, ab_err_dex4_C18O = calc_abundance(4, wl_C_18_O, solar_skiplist_C18O, star4_C18O_skiplist, snip_width_C18O, 1.5, plot=True, CO_species = "C18O", label = "Solar Twin 4")
+print("HIP 77052 has a C18O abundance of " + str(fit_min4_C18O) + " +/- " + str(ab_err4_C18O) + " xSolar or " + str(fit_min_dex4_C18O) + " dex \n")
+
+
+#star 5: HIP 79672
 star5_C18O_skiplist = [0, 2, 3, 15, 24] #stellar & model profiles look GREAT with these lines removed
+abundance_plot(5, wl_C_18_O, solar_skiplist_C18O, star5_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 5")
+fit_min5_C18O, fit_min_dex5_C18O, ab_err5_C18O, ab_err_dex5_C18O = calc_abundance(5, wl_C_18_O, solar_skiplist_C18O, star5_C18O_skiplist, snip_width_C18O, 0.75, plot=True, CO_species = "C18O", label = "Solar Twin 5")
+print("HIP 79672 has a C18O abundance of " + str(fit_min5_C18O) + " +/- " + str(ab_err5_C18O) + " xSolar or " + str(fit_min_dex5_C18O) + " dex \n")
 
-star6_C18O_skiplist = [1, 6]
 
-chi_sqr_snipwidth = 10
-snip_width_C18O = 0.0006
-abundance_plot(1, wl_C_18_O, solar_skiplist_C18O, star1_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "HIP 102040")
-abundance_plot(2, wl_C_18_O, solar_skiplist_C18O, star2_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "HIP 29432")
-abundance_plot(3, wl_C_18_O, solar_skiplist_C18O, star3_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "HIP 42333")
-abundance_plot(4, wl_C_18_O, solar_skiplist_C18O, star4_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "HIP 77052")
-abundance_plot(5, wl_C_18_O, solar_skiplist_C18O, star5_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "HIP 79672")
-abundance_plot(6, wl_C_18_O, solar_skiplist_C18O, star6_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "HIP 85042")
-fit_min618, fit_min_dex618, ab_err618, ab_err_dex618 = calc_abundance(6, wl_C_18_O, solar_skiplist_C18O, star6_C18O_skiplist, 0.00018, 1.0, plot=True, CO_species = "C18O", label = "HIP 85042")
-print("HIP 85042 has a 13CO abundance of " + str(fit_min618) + " +/- " + str(ab_err618) + " xSolar or " + str(fit_min_dex618) + " dex \n")
-###de-slant solar models???
-### skip_list doesn't currently include lines where there is NO SPECTRUM; must remove from wl_C_18_O; I think this is causing the empty array error
+#star 6: HIP 85042
+star6_C18O_skiplist = [0, 2, 3, 15, 24] #[1, 6]
+abundance_plot(6, wl_C_18_O, solar_skiplist_C18O, star6_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 6")
+fit_min6_C18O, fit_min_dex6_C18O, ab_err6_C18O, ab_err_dex6_C18O = calc_abundance(6, wl_C_18_O, solar_skiplist_C18O, star6_C18O_skiplist, snip_width_C18O, 1.78, plot=True, CO_species = "C18O", label = "Solar Twin 6")
+print("HIP 85042 has a C18O abundance of " + str(fit_min6_C18O) + " +/- " + str(ab_err6_C18O) + " xSolar or " + str(fit_min_dex6_C18O) + " dex \n")
 
-# wl0, flux0 = solar_data(1)
-# wl1, flux1 = solar_data(2)
-# wl2, flux2 = solar_data(3)
-# wl3, flux3 = solar_data(4)
+###
+print("xSolar abundances: ")
+print(fit_min1_C18O, fit_min2_C18O, fit_min3_C18O, fit_min4_C18O, fit_min5_C18O, fit_min6_C18O)
+print("Uncertainties: ")
+print(ab_err1_C18O, ab_err2_C18O, ab_err3_C18O, ab_err4_C18O, ab_err5_C18O, ab_err6_C18O)
 
-# plt.figure()
-# plt.title("Solar Models Overlapped")
-# plt.ylim(0.1, 0.3)
-# plt.xlim(4.6, 4.7)
-# plt.plot(wl3, flux3, label = "x3 CO")
-# plt.plot(wl2, flux2, label = "x1 CO")
-# plt.plot(wl1, flux1, label = "x0.3 CO")
-# plt.plot(wl0, flux0, label = "x0 CO")
-# plt.legend()
-# for i in range(wl_12_CO.shape[0] - 1):
-#     plt.axvline(x = wl_12_CO[i], color= 'k', linestyle=':')
-# for i in range(wl_13_CO.shape[0] - 1):
-#     plt.axvline(x = wl_13_CO[i], color= 'k', linestyle='--')
-# for i in range(wl_C_18_O.shape[0] - 1):
-#     plt.axvline(x = wl_C_18_O[i], color= 'k', linestyle='-')
-# label1 = plt.axvline(x = wl_12_CO[-1], color= 'k', linestyle=':')
-# label2 = plt.axvline(x = wl_13_CO[-1], color= 'k', linestyle='--')
-# label3 = plt.axvline(x = wl_C_18_O[-1], color= 'k', linestyle='-')
-# plt.legend([label1,label2,label3], ["12_CO","13_CO","C_18_O"])
+print("Abundances (dex): ")
+print(fit_min_dex1_C18O, fit_min_dex2_C18O, fit_min_dex3_C18O, fit_min_dex4_C18O, fit_min_dex5_C18O, fit_min_dex6_C18O)
+print("Uncertainties: ")
+print(ab_err_dex1_C18O, ab_err_dex2_C18O, ab_err_dex3_C18O, ab_err_dex4_C18O, ab_err_dex5_C18O, ab_err_dex6_C18O)
+
 
 ####################################################################################################################################################################
+plt.figure()
+plt.title("$^{13}$CO Abundance vs. Stellar Age")
+plt.xlabel("Stellar Age (Gyr)")
+plt.ylabel("Calculated $^{13}$CO Abundance (dex)")
+plt.scatter(4.603, 0.0,  color = '#FF6700', marker = "o", label = "Sun")
+plt.scatter([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], marker = "o", label = "Solar Twins")
+plt.errorbar([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], yerr = [ab_err_dex1, ab_err_dex2, ab_err_dex3, ab_err_dex4, ab_err_dex5, ab_err_dex6], fmt = 'none', linewidth = 0.5, color = "black")
+plt.errorbar([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], xerr = [0.91, 0.71, 0.52, 0.91, 0.39, 0.62], fmt = 'none', linewidth = 0.5, color = "black")
+age_abundance_fit = np.polyfit([2.42, 5.51, 1.01, 3.67, 3.09, 6.66], [fit_min_dex1, fit_min_dex2, fit_min_dex3, fit_min_dex4, fit_min_dex5, fit_min_dex6], deg = 1)
+#age_abundance_line = np.poly1d(age_abundance_fit)
+#plt.plot(np.linspace(0, 7, 1000), age_abundance_fit[0]*(np.linspace(0, 7, 1000)) + age_abundance_fit[1])
+plt.legend()
+
 metallicity = [-0.093, -0.096, 0.138, 0.036, 0.056, 0.015] #Fe/H from spreadsheet
 err_m = [0.006, 0.005, 0.008, 0.006, 0.003, 0.004]
 
