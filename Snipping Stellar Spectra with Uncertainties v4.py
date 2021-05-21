@@ -92,90 +92,261 @@ def star_data(star):
 
 ####################################################################################################################################################################
 #load solar model data
-def solar_data(model_num):
+def solar_data(CO_species, temp, model_num):
     ###13CO models
-    if(model_num == 1):
-        sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.0x.fromsun.hires.spec.fits")
-        wl = sun[0,:] / 10000
-        sun_flux_log = sun[1,:] #log base 10 of flux
-        sun_flux = 10**sun_flux_log
-        flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    if(CO_species == "13CO" and temp == 5690):
+        if(model_num == 1):
+            sun = pyfits.getdata(base_dir_models + "nlte5690_4.39.0x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    
+        elif(model_num == 2):
+            sun = pyfits.getdata(base_dir_models + "nlte5690_4.39.0.3x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    
+        elif(model_num == 3):
+            sun = pyfits.getdata(base_dir_models + "nlte5690_4.39.1x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    
+        elif(model_num == 4):
+            sun = pyfits.getdata(base_dir_models + "nlte5690_4.39.3x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+        
+    elif(CO_species == "13CO" and temp == 5780):
+        if(model_num == 1):
+            sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.0x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    
+        elif(model_num == 2):
+            sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.0.3x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    
+        elif(model_num == 3):
+            sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.1x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    
+        elif(model_num == 4):
+            sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.3x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
 
-    elif(model_num == 2):
-        sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.0.3x.fromsun.hires.spec.fits")
-        wl = sun[0,:] / 10000
-        sun_flux_log = sun[1,:] #log base 10 of flux
-        sun_flux = 10**sun_flux_log
-        flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    elif(CO_species == "13CO" and temp == 5870):
+        if(model_num == 1):
+            sun = pyfits.getdata(base_dir_models + "nlte5870_4.49.0x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    
+        elif(model_num == 2):
+            sun = pyfits.getdata(base_dir_models + "nlte5870_4.49.0.3x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    
+        elif(model_num == 3):
+            sun = pyfits.getdata(base_dir_models + "nlte5870_4.49.1x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    
+        elif(model_num == 4):
+            sun = pyfits.getdata(base_dir_models + "nlte5870_4.49.3x.fromsun.hires.spec.fits")
+            wl = sun[0,:] / 10000
+            sun_flux_log = sun[1,:] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
 
-    elif(model_num == 3):
-        sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.1x.fromsun.hires.spec.fits")
-        wl = sun[0,:] / 10000
-        sun_flux_log = sun[1,:] #log base 10 of flux
-        sun_flux = 10**sun_flux_log
-        flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
-
-    elif(model_num == 4):
-        sun = pyfits.getdata(base_dir_models + "nlte5780_4.44.3x.fromsun.hires.spec.fits")
-        wl = sun[0,:] / 10000
-        sun_flux_log = sun[1,:] #log base 10 of flux
-        sun_flux = 10**sun_flux_log
-        flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
-     
+    
     ###C18O models
-    elif(model_num == 5): 
-        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=0.00e+00x.fromsun.hires.7.csv"
-        sun = pd.read_csv(filename, sep = ' ')
-        sun = (pd.DataFrame.to_numpy(sun)).T
-        wl = sun[0] / 10000
-        sun_flux_log = sun[1] #log base 10 of flux
-        sun_flux = 10**sun_flux_log
-        flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
-        
-    elif(model_num == 6): 
-        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=3.00e-01x.fromsun.hires.7.csv"
-        sun = pd.read_csv(filename, sep = ' ')
-        sun = (pd.DataFrame.to_numpy(sun)).T
-        wl = sun[0] / 10000
-        sun_flux_log = sun[1] #log base 10 of flux
-        sun_flux = 10**sun_flux_log
-        flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
-        
-    elif(model_num == 7): 
-        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=5.60e-01x.fromsun.hires.7.csv"
-        sun = pd.read_csv(filename, sep = ' ')
-        sun = (pd.DataFrame.to_numpy(sun)).T
-        wl = sun[0] / 10000
-        sun_flux_log = sun[1] #log base 10 of flux
-        sun_flux = 10**sun_flux_log
-        flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
-        
-    elif(model_num == 8): 
-        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=1.00e+00x.fromsun.hires.7.csv"
-        sun = pd.read_csv(filename, sep = ' ')
-        sun = (pd.DataFrame.to_numpy(sun)).T
-        wl = sun[0] / 10000
-        sun_flux_log = sun[1] #log base 10 of flux
-        sun_flux = 10**sun_flux_log
-        flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
-        
-    elif(model_num == 9): 
-        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=1.78e+00x.fromsun.hires.7.csv"
-        sun = pd.read_csv(filename, sep = ' ')
-        sun = (pd.DataFrame.to_numpy(sun)).T
-        wl = sun[0] / 10000
-        sun_flux_log = sun[1] #log base 10 of flux
-        sun_flux = 10**sun_flux_log
-        flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
-        
-    elif(model_num == 10): 
-        filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=3.00e+00x.fromsun.hires.7.csv"
-        sun = pd.read_csv(filename, sep = ' ')
-        sun = (pd.DataFrame.to_numpy(sun)).T
-        wl = sun[0] / 10000
-        sun_flux_log = sun[1] #log base 10 of flux
-        sun_flux = 10**sun_flux_log
-        flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+    elif(CO_species == "C18O" and temp == 5690):
+        if(model_num == 1): 
+            filename = base_dir_models + "nlte5.69e+03.4.39e+00.0.0.O18=0.00e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 2): 
+            filename = base_dir_models + "nlte5.69e+03.4.39e+00.0.0.O18=3.00e-01x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 3): 
+            filename = base_dir_models + "nlte5.69e+03.4.39e+00.0.0.O18=5.60e-01x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 4): 
+            filename = base_dir_models + "nlte5.69e+03.4.39e+00.0.0.O18=1.00e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 5): 
+            filename = base_dir_models + "nlte5.69e+03.4.39e+00.0.0.O18=1.78e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 6): 
+            filename = base_dir_models + "nlte5.69e+03.4.39e+00.0.0.O18=3.00e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+    elif(CO_species == "C18O" and temp == 5780):
+        if(model_num == 1): 
+            filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=0.00e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 2): 
+            filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=3.00e-01x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 3): 
+            filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=5.60e-01x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 4): 
+            filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=1.00e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 5): 
+            filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=1.78e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 6): 
+            filename = base_dir_models + "nlte5.78e+03.4.44e+00.0.0.O18=3.00e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+    elif(CO_species == "C18O" and temp == 5870):
+        if(model_num == 1): 
+            filename = base_dir_models + "nlte5.87e+03.4.49e+00.0.0.O18=0.00e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 2): 
+            filename = base_dir_models + "nlte5.87e+03.4.49e+00.0.0.O18=3.00e-01x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 3): 
+            filename = base_dir_models + "nlte5.87e+03.4.49e+00.0.0.O18=5.60e-01x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 4): 
+            filename = base_dir_models + "nlte5.87e+03.4.49e+00.0.0.O18=1.00e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 5): 
+            filename = base_dir_models + "nlte5.87e+03.4.49e+00.0.0.O18=1.78e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
+            
+        elif(model_num == 6): 
+            filename = base_dir_models + "nlte5.87e+03.4.49e+00.0.0.O18=3.00e+00x.fromsun.hires.7.csv"
+            sun = pd.read_csv(filename, sep = ' ')
+            sun = (pd.DataFrame.to_numpy(sun)).T
+            wl = sun[0] / 10000
+            sun_flux_log = sun[1] #log base 10 of flux
+            sun_flux = 10**sun_flux_log
+            flux = sun_flux / np.nanmean(sun_flux) #nanmean or nanmedian?
 
     return wl, flux
 
@@ -234,11 +405,11 @@ def snip_spectrum_simp(line_list, spectrum, wavegrid, snip_width, interp_sample_
 
 ####################################################################################################################################################################
 #Write a function to output stack_vel and stack_flux for a given star/model i.e. same result as snip_plots with output_stack = True but without the plots
-def stack_data(star, useable_line_list, snip_width, CO_species, model):
+def stack_data(star, useable_line_list, snip_width, CO_species, temp, model):
             
     if (model == True):
         #Solar Models
-        wl, flux = solar_data(star)
+        wl, flux = solar_data(CO_species, temp, star)
         snips_wl, snips_flux, snips_flux_norm = snip_spectrum_simp(useable_line_list, flux, wl, snip_width, 50)
         stack_vel = np.mean((snips_wl - useable_line_list) / useable_line_list * 3e5, axis = 1)
         stack_flux = np.mean(snips_flux_norm, axis = 1)
@@ -261,24 +432,24 @@ def stack_data(star, useable_line_list, snip_width, CO_species, model):
 
 #####################################################################################################################################################################
 #Write a fuction to find this line for a given stacked absorption line; outputs np.poly1d(fit_coefficients) to be divided from the spectrum later
-def de_slant(stack_vel, stack_flux):
+def de_slant(stack_vel, stack_flux, L_shoulder, R_shoulder, shoulder_width):
     #returns a np.poly1d polynomial (a line) to be divided out from the spectrum in order to correct the slant
     
-    vel_snipL, flux_snipL = snip_simp(stack_vel, stack_flux, -7.5, 5) #snips the left "shoulder" of the stacked absorption line i.e. [-10, -5] km/s
-    vel_snipR, flux_snipR = snip_simp(stack_vel, stack_flux, 7.5, 5) #snips the right "shoulder" of the stacked absorption line i.e. [-10, -5] km/s
+    vel_snipL, flux_snipL = snip_simp(stack_vel, stack_flux, L_shoulder, shoulder_width) #snips the left "shoulder" of the stacked absorption line i.e. [-10, -5] km/s
+    vel_snipR, flux_snipR = snip_simp(stack_vel, stack_flux, R_shoulder, shoulder_width) #snips the right "shoulder" of the stacked absorption line i.e. [-10, -5] km/s
     
-    avgL = np.mean(flux_snipL) #average flux of the left shoulder
-    avgR = np.mean(flux_snipR) #average flux of the right shoulder
+    avgL = np.nanmean(flux_snipL) #average flux of the left shoulder
+    avgR = np.nanmean(flux_snipR) #average flux of the right shoulder
     
-    l_coeff = np.polyfit([-7.5, 7.5], [avgL, avgR], deg = 1) #fits a line through the midpoints of each shoulder i.e. (- 7.5 km/s, avgL) and ( 7.5 km/s, avgR); returns coeffecients 
+    l_coeff = np.polyfit([L_shoulder, R_shoulder], [avgL, avgR], deg = 1) #fits a line through the midpoints of each shoulder i.e. (- 7.5 km/s, avgL) and ( 7.5 km/s, avgR); returns coeffecients 
     line = np.poly1d(l_coeff) #puts the equation of the line into a "useable form"; divide out of spectrum as line(stack_vel)
     
     return line
 
 #####################################################################################################################################################################
-#Write a function to calculate chi-squared values
-def chi_sqr(star_num, stack_vel_obs, stack_vel_model, stack_flux_obs, stack_flux_model, err, CO_species):
-    #custom chi_sqr snip widths and line centers
+#Write a function to calculate chi-squared values for the line profiles plotted in abundance_plot()
+def chi_sqr_lp(star_num, stack_vel_obs, stack_vel_model, stack_flux_obs, stack_flux_model, err, CO_species):
+    #custom chi_sqr snip widths and line centers; lp = line profiles
     if CO_species == "13CO":
         snip_bounds_L = [-5.864, -3.405, -4.429, -4.016, -5.227, -4.144]
         snip_bounds_R = [6.118, 3.627, 6.235, 4.444, 4.273, 2.867]
@@ -292,15 +463,96 @@ def chi_sqr(star_num, stack_vel_obs, stack_vel_model, stack_flux_obs, stack_flux
     #resize arrays to exclude the wings
     stack_vel_obs, stack_flux_obs, err = snip(stack_vel_obs, stack_flux_obs, err, snip_center, chi_sqr_snipwidth)
     stack_vel_model, stack_flux_model = snip_simp(stack_vel_model, stack_flux_model, snip_center, chi_sqr_snipwidth)
+    
     chisqr = 0
     for i in range(len(stack_flux_obs) - 1):
         chisqr = chisqr + ((stack_flux_obs[i] - stack_flux_model[i])**2)/(err[i]**2)
     return chisqr
-#add a CO_species switch once you get better looking C18O line profiles
 
 #####################################################################################################################################################################
-def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip_width, abundance_guess, plot, CO_species, label = "HIP ###"):
-    ###requires stack_data() and chi_sqr() functions
+#Write a function to calculate chi-squared values for regions of spectrum
+def chi_sqr(flux_obs, flux_model, err):
+    
+    chisqr = 0
+    for i in range(len(flux_obs) - 1):
+        chisqr = chisqr + ((flux_obs[i] - flux_model[i])**2)/(err[i]**2)
+    return chisqr
+
+#####################################################################################################################################################################
+def test_stellar_parameters(star_num, temp_guess, plot, label = "HIP ###"):
+    #this function resembles the calc_abundance() function; however, here we will use the original stellar spectrum and compare it to 1x Solar models of 
+    #different temperatures and log g values to see which set of models we should use for line profile comparison
+    
+    #load data
+    wl, flux, err = star_data(star_num)
+    sun_wl1, sun_flux1 = solar_data(CO_species = "13CO", temp = 5690, model_num = 3) #1x Solar with T = 5690, log g = 4.39
+    sun_wl2, sun_flux2 = solar_data(CO_species = "13CO", temp = 5780, model_num = 3) #1x Solar with T = 5780, log g = 4.44
+    sun_wl3, sun_flux3 = solar_data(CO_species = "13CO", temp = 5870, model_num = 3) #1x Solar with T = 5870, log g = 4.49
+    
+    #Use snip functions to select a wavelength region on which to perform a chi-squared test
+
+    sun_wl1, sun_flux1 = snip_simp(sun_wl1, sun_flux1, 4.618, width = 0.016) #snip_center = center of the region of interest; width = width of that region
+    sun_wl2, sun_flux2 = snip_simp(sun_wl2, sun_flux2, 4.618, width = 0.016)
+    sun_wl3, sun_flux3 = snip_simp(sun_wl3, sun_flux3, 4.618, width = 0.016)
+    
+    wl, flux, err = snip(wl, flux, err, 4.618, width = 0.016) #snip_center = center of the region of interest; width = width of that region
+    
+    #interpolate models onto ST wavegrid
+    sun_flux1 = np.interp(wl, sun_wl1, sun_flux1)
+    sun_flux2 = np.interp(wl, sun_wl2, sun_flux2)
+    sun_flux3 = np.interp(wl, sun_wl3, sun_flux3)
+    
+    #normalize models ~1
+    sun_flux1 = sun_flux1 / np.mean(sun_flux1)
+    sun_flux2 = sun_flux2 / np.mean(sun_flux2)
+    sun_flux3 = sun_flux3 / np.mean(sun_flux3)
+    
+    # #deslant sun_fluxes???
+    # slant1 = de_slant(wl, sun_flux1, 4.603, 4.633, 0.006)
+    # slant2 = de_slant(wl, sun_flux2, 4.603, 4.633, 0.006)
+    # slant3 = de_slant(wl, sun_flux3, 4.603, 4.633, 0.006)
+    
+    # sun_flux1 = sun_flux1 / slant1
+    # sun_flux2 = sun_flux2 / slant2
+    # sun_flux3 = sun_flux3 / slant3
+    
+    #calculate 3 chi_sqr values and put them in an array
+    chi_sqr_list = [chi_sqr(flux, sun_flux1, err), chi_sqr(flux, sun_flux2, err), chi_sqr(flux, sun_flux3, err)]
+        
+    #print(chi_sqr_list)
+    #create a matching "x-array" of xSolar abundances i.e. [0, 1/3, 1, 3]
+    x_list = [5690, 5780, 5870]
+    
+    #fit them with a degree 2 polynomial
+    p_coeff = np.polyfit(x_list, chi_sqr_list, deg = 2)
+    parabola = np.poly1d(p_coeff)
+    
+    #find the minimum of the parabola
+    fit_min, fit_min_val, num_its, f_evals, warn_flag = optimize.fmin(parabola, temp_guess, full_output = True)
+    #find where polynomial fit = fit_min_val + 1
+    err_bounds = np.roots(parabola - fit_min_val - 1)
+    temp_err = np.abs(err_bounds[1] - err_bounds[0]) / 2
+    
+    #plot if option plot= True
+    if (plot == True):
+        plt.figure()
+        plt.title(label + ": Temperature Fit")
+        plt.xlabel("Temperature")
+        plt.ylabel("$\chi^2$")
+        plt.scatter(x_list, chi_sqr_list, marker = 'o', label = "$\chi^2$ Interp")
+        plt.scatter(err_bounds, parabola(err_bounds), color = "r", marker = "x")
+        plt.plot(np.linspace(5000, 6000, 1000), parabola(np.linspace(5000, 6000, 1000)), label = "Data Fit")
+        plt.plot(fit_min, parabola(fit_min), marker = "X", label = ("min @ x = %s" % np.round(fit_min, 0))) #different color than previous
+        plt.legend()
+        
+    else:
+        pass
+    
+    return np.round(fit_min, 0), np.round(temp_err, 0)
+
+#####################################################################################################################################################################
+def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip_width, abundance_guess, plot, CO_species, temp, label = "HIP ###"):
+    ###requires stack_data() and chi_sqr_lp() functions
     #requires scipy.optimize
     
     #star_num = a number 1-6; used to pick which star we're looking at
@@ -311,37 +563,37 @@ def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip
     
     #stack_data for chosen star and all four solar models
     line_list = useable_lines(full_line_list, np.append(star_skiplist, solar_skiplist))
-    stack_vel, stack_flux, stack_err = stack_data(star_num, line_list, snip_width, CO_species, model = False)
+    stack_vel, stack_flux, stack_err = stack_data(star_num, line_list, snip_width, CO_species, temp, model = False)
     #SLANT CORRECTION!!!
-    slant = de_slant(stack_vel, stack_flux)
+    slant = de_slant(stack_vel, stack_flux, -7.5, 7.5, 5)
     stack_flux = stack_flux / slant(stack_vel)
     stack_err = stack_err / slant(stack_vel)
     
     if CO_species == "13CO":
-        stack_vel1, stack_flux1 = stack_data(1, line_list, snip_width, CO_species, model = True)
-        stack_vel2, stack_flux2 = stack_data(2, line_list, snip_width, CO_species, model = True)
-        stack_vel3, stack_flux3 = stack_data(3, line_list, snip_width, CO_species, model = True)
-        stack_vel4, stack_flux4 = stack_data(4, line_list, snip_width, CO_species, model = True)
+        stack_vel1, stack_flux1 = stack_data(1, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel2, stack_flux2 = stack_data(2, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel3, stack_flux3 = stack_data(3, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel4, stack_flux4 = stack_data(4, line_list, snip_width, CO_species, temp, model = True)
         label = "Numerical Abundance Calculation: $\chi^2$ Test Interp: 13CO"
             
         #calculate 4 chi_sqr values and put them in an array
-        chi_sqr_list = [chi_sqr(star_num, stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err, CO_species = "13CO"), chi_sqr(star_num, stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err, CO_species = "13CO"), chi_sqr(star_num, stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err, CO_species = "13CO"), chi_sqr(star_num, stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err, CO_species = "13CO")]
+        chi_sqr_list = [chi_sqr_lp(star_num, stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err, CO_species = "13CO"), chi_sqr_lp(star_num, stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err, CO_species = "13CO"), chi_sqr_lp(star_num, stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err, CO_species = "13CO"), chi_sqr_lp(star_num, stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err, CO_species = "13CO")]
         
         #print(chi_sqr_list)
         #create a matching "x-array" of xSolar abundances i.e. [0, 1/3, 1, 3]
         x_list = [0.0, 1/3, 1.0, 3.0]
         
     elif CO_species == "C18O":
-        stack_vel1, stack_flux1 = stack_data(5, line_list, snip_width, CO_species, model = True)
-        stack_vel2, stack_flux2 = stack_data(6, line_list, snip_width, CO_species, model = True)
-        stack_vel3, stack_flux3 = stack_data(7, line_list, snip_width, CO_species, model = True)
-        stack_vel4, stack_flux4 = stack_data(8, line_list, snip_width, CO_species, model = True)
-        stack_vel5, stack_flux5 = stack_data(9, line_list, snip_width, CO_species, model = True)
-        stack_vel6, stack_flux6 = stack_data(10, line_list, snip_width, CO_species, model = True)
+        stack_vel1, stack_flux1 = stack_data(1, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel2, stack_flux2 = stack_data(2, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel3, stack_flux3 = stack_data(3, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel4, stack_flux4 = stack_data(4, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel5, stack_flux5 = stack_data(5, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel6, stack_flux6 = stack_data(6, line_list, snip_width, CO_species, temp, model = True)
         label = "Numerical Abundance Calculation: $\chi^2$ Test Interp: C18O"
             
         #calculate 6 chi_sqr values and put them in an array
-        chi_sqr_list = [chi_sqr(star_num, stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err, CO_species = "C18O"), chi_sqr(star_num, stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err, CO_species = "C18O"), chi_sqr(star_num, stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err, CO_species = "C18O"), chi_sqr(star_num, stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err, CO_species = "C18O"), chi_sqr(star_num, stack_vel, stack_vel5, stack_flux, stack_flux5, stack_err, CO_species = "C18O"), chi_sqr(star_num, stack_vel, stack_vel6, stack_flux, stack_flux6, stack_err, CO_species = "C18O")]
+        chi_sqr_list = [chi_sqr_lp(star_num, stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err, CO_species = "C18O"), chi_sqr_lp(star_num, stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err, CO_species = "C18O"), chi_sqr_lp(star_num, stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err, CO_species = "C18O"), chi_sqr_lp(star_num, stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err, CO_species = "C18O"), chi_sqr_lp(star_num, stack_vel, stack_vel5, stack_flux, stack_flux5, stack_err, CO_species = "C18O"), chi_sqr_lp(star_num, stack_vel, stack_vel6, stack_flux, stack_flux6, stack_err, CO_species = "C18O")]
         
         #print(chi_sqr_list)
         #create a matching "x-array" of xSolar abundances i.e. [0, 1/3, 1, 3]
@@ -378,19 +630,19 @@ def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip
 
 #####################################################################################################################################################################
 #Write a function to automate the abundance plots i.e. stellar stacked absorption lines + 4 model stacked lines
-def abundance_plot(star_num, full_line_list, solar_skiplist, star_skiplist, snip_width, CO_species,  label = "HIP ###"):
+def abundance_plot(star_num, full_line_list, solar_skiplist, star_skiplist, snip_width, CO_species, temp, label = "HIP ###"):
     #make suree to use same line lists for solar models and stars
     line_list = useable_lines(full_line_list, np.append(star_skiplist, solar_skiplist))
     
-    stack_vel, stack_flux, stack_err = stack_data(star_num, line_list, snip_width, CO_species, model = False)
-    slant = de_slant(stack_vel, stack_flux)
+    stack_vel, stack_flux, stack_err = stack_data(star_num, line_list, snip_width, CO_species, temp, model = False)
+    slant = de_slant(stack_vel, stack_flux, -7.5, 7.5, 5)
     
     if CO_species == "13CO":
         
-        stack_vel_mod1, stack_flux_mod1 = stack_data(1, line_list, snip_width, CO_species, model = True)
-        stack_vel_mod2, stack_flux_mod2 = stack_data(2, line_list, snip_width, CO_species, model = True)
-        stack_vel_mod3, stack_flux_mod3 = stack_data(3, line_list, snip_width, CO_species, model = True)
-        stack_vel_mod4, stack_flux_mod4 = stack_data(4, line_list, snip_width, CO_species, model = True)
+        stack_vel_mod1, stack_flux_mod1 = stack_data(1, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel_mod2, stack_flux_mod2 = stack_data(2, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel_mod3, stack_flux_mod3 = stack_data(3, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel_mod4, stack_flux_mod4 = stack_data(4, line_list, snip_width, CO_species, temp, model = True)
         
         label1 = "0x Solar $^{13}$CO"
         label2 = "1/3x Solar $^{13}$CO"
@@ -414,12 +666,12 @@ def abundance_plot(star_num, full_line_list, solar_skiplist, star_skiplist, snip
     
     elif CO_species == "C18O":
         
-        stack_vel_mod1, stack_flux_mod1 = stack_data(5, line_list, snip_width, CO_species, model = True)
-        stack_vel_mod2, stack_flux_mod2 = stack_data(6, line_list, snip_width, CO_species, model = True)
-        stack_vel_mod3, stack_flux_mod3 = stack_data(7, line_list, snip_width, CO_species, model = True)
-        stack_vel_mod4, stack_flux_mod4 = stack_data(8, line_list, snip_width, CO_species, model = True)
-        stack_vel_mod5, stack_flux_mod5 = stack_data(9, line_list, snip_width, CO_species, model = True)
-        stack_vel_mod6, stack_flux_mod6 = stack_data(10, line_list, snip_width, CO_species, model = True)
+        stack_vel_mod1, stack_flux_mod1 = stack_data(1, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel_mod2, stack_flux_mod2 = stack_data(2, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel_mod3, stack_flux_mod3 = stack_data(3, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel_mod4, stack_flux_mod4 = stack_data(4, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel_mod5, stack_flux_mod5 = stack_data(5, line_list, snip_width, CO_species, temp, model = True)
+        stack_vel_mod6, stack_flux_mod6 = stack_data(6, line_list, snip_width, CO_species, temp, model = True)
         
         label1 = "0x Solar C$^{18}$O"
         label2 = "0.3x Solar C$^{18}$O"
@@ -457,45 +709,45 @@ sun_13_CO_lines = useable_lines(wl_13_CO, solar_skiplist)
 
 #star 1: HIP 102040
 star1_skiplist = [8, 11, 24]
-abundance_plot(1, wl_13_CO, solar_skiplist, star1_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 1")
-fit_min1, fit_min_dex1, ab_err1, ab_err_dex1 = calc_abundance(1, wl_13_CO, solar_skiplist, star1_skiplist, snip_width_13CO, 1.0, plot=True, CO_species = "13CO", label = "Solar Twin 1")
+abundance_plot(1, wl_13_CO, solar_skiplist, star1_skiplist, snip_width_13CO, CO_species = "13CO", temp = 5870, label = "Solar Twin 1")
+fit_min1, fit_min_dex1, ab_err1, ab_err_dex1 = calc_abundance(1, wl_13_CO, solar_skiplist, star1_skiplist, snip_width_13CO, 1.0, plot=True, CO_species = "13CO", temp = 5870, label = "Solar Twin 1")
 print("HIP 102040 has a 13CO abundance of " + str(fit_min1) + " +/- " + str(ab_err1) + " xSolar or " + str(fit_min_dex1) + " dex \n")
 
 
 #star 2: HIP 29432
 star2_skiplist = [8, 10, 11, 18, 24]
-abundance_plot(2, wl_13_CO, solar_skiplist, star2_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 2")
-fit_min2, fit_min_dex2, ab_err2, ab_err_dex2 = calc_abundance(2, wl_13_CO, solar_skiplist, star2_skiplist, snip_width_13CO, 1.55, plot=True, CO_species = "13CO", label = "Solar Twin 2")
+abundance_plot(2, wl_13_CO, solar_skiplist, star2_skiplist, snip_width_13CO, CO_species = "13CO", temp = 5780, label = "Solar Twin 2")
+fit_min2, fit_min_dex2, ab_err2, ab_err_dex2 = calc_abundance(2, wl_13_CO, solar_skiplist, star2_skiplist, snip_width_13CO, 1.55, plot=True, CO_species = "13CO", temp = 5780, label = "Solar Twin 2")
 print("HIP 29432 has a 13CO abundance of " + str(fit_min2) + " +/- " + str(ab_err2) + " xSolar or " + str(fit_min_dex2) + " dex \n")
 
 
 #star 3: HIP 42333
 star3_skiplist = [11, 24]
-abundance_plot(3, wl_13_CO, solar_skiplist, star3_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 3")
-fit_min3, fit_min_dex3, ab_err3, ab_err_dex3 = calc_abundance(3, wl_13_CO, solar_skiplist, star3_skiplist, snip_width_13CO, 1.5, plot=True, CO_species = "13CO", label = "Solar Twin 3")
+abundance_plot(3, wl_13_CO, solar_skiplist, star3_skiplist, snip_width_13CO, CO_species = "13CO", temp = 5870, label = "Solar Twin 3")
+fit_min3, fit_min_dex3, ab_err3, ab_err_dex3 = calc_abundance(3, wl_13_CO, solar_skiplist, star3_skiplist, snip_width_13CO, 1.5, plot=True, CO_species = "13CO", temp = 5870, label = "Solar Twin 3")
 print("HIP 42333 has a 13CO abundance of " + str(fit_min3) + " +/- " + str(ab_err3) + " xSolar or " + str(fit_min_dex3) + " dex \n")
 
 
 #star 4: HIP 77052
 star4_skiplist = [11, 24]
 star4_useable_sun_lines = useable_lines(sun_13_CO_lines, star4_skiplist)
-abundance_plot(4, wl_13_CO, solar_skiplist, star4_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 4")
-fit_min4, fit_min_dex4, ab_err4, ab_err_dex4 = calc_abundance(4, wl_13_CO, solar_skiplist, star4_skiplist, snip_width_13CO, 1.5, plot=True, CO_species = "13CO", label = "Solar Twin 4")
+abundance_plot(4, wl_13_CO, solar_skiplist, star4_skiplist, snip_width_13CO, CO_species = "13CO", temp = 5690, label = "Solar Twin 4")
+fit_min4, fit_min_dex4, ab_err4, ab_err_dex4 = calc_abundance(4, wl_13_CO, solar_skiplist, star4_skiplist, snip_width_13CO, 1.5, plot=True, CO_species = "13CO", temp = 5690, label = "Solar Twin 4")
 print("HIP 77052 has a 13CO abundance of " + str(fit_min4) + " +/- " + str(ab_err4) + " xSolar or " + str(fit_min_dex4) + " dex \n")
 
 #star 5: HIP 79672
 star5_skiplist = [11, 24]
 star5_useable_sun_lines = useable_lines(sun_13_CO_lines, star5_skiplist)
-abundance_plot(5, wl_13_CO, solar_skiplist, star5_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 5")
-fit_min5, fit_min_dex5, ab_err5, ab_err_dex5 = calc_abundance(5, wl_13_CO, solar_skiplist, star5_skiplist, snip_width_13CO, 0.8, plot=True, CO_species = "13CO", label = "Solar Twin 5")
+abundance_plot(5, wl_13_CO, solar_skiplist, star5_skiplist, snip_width_13CO, CO_species = "13CO", temp = 5780, label = "Solar Twin 5")
+fit_min5, fit_min_dex5, ab_err5, ab_err_dex5 = calc_abundance(5, wl_13_CO, solar_skiplist, star5_skiplist, snip_width_13CO, 0.8, plot=True, CO_species = "13CO", temp = 5780, label = "Solar Twin 5")
 print("HIP 79672 has a 13CO abundance of " + str(fit_min5) + " +/- " + str(ab_err5) + " xSolar or " + str(fit_min_dex5) + " dex \n")
 
 
 #star 6: HIP 85042
 star6_skiplist = [8, 11, 24]
 star6_useable_sun_lines = useable_lines(sun_13_CO_lines, star6_skiplist)
-abundance_plot(6, wl_13_CO, solar_skiplist, star6_skiplist, snip_width_13CO, CO_species = "13CO", label = "Solar Twin 6")
-fit_min6, fit_min_dex6, ab_err6, ab_err_dex6 = calc_abundance(6, wl_13_CO, solar_skiplist, star6_skiplist, snip_width_13CO, 1.7, plot=True, CO_species = "13CO", label = "Solar Twin 6")
+abundance_plot(6, wl_13_CO, solar_skiplist, star6_skiplist, snip_width_13CO, CO_species = "13CO", temp = 5690, label = "Solar Twin 6")
+fit_min6, fit_min_dex6, ab_err6, ab_err_dex6 = calc_abundance(6, wl_13_CO, solar_skiplist, star6_skiplist, snip_width_13CO, 1.7, plot=True, CO_species = "13CO", temp = 5690, label = "Solar Twin 6")
 print("HIP 85042 has a 13CO abundance of " + str(fit_min6) + " +/- " + str(ab_err6) + " xSolar or " + str(fit_min_dex6) + " dex \n")
 
 ###
@@ -556,43 +808,43 @@ velocity_shifts_C18O = [0, -1.19, 0.405, 0, 0.79, 0.585]
 
 #star 1: HIP 102040
 star1_C18O_skiplist = [0, 2, 3, 6, 15, 24] #[0, 1, 3, 5, 10, 14, 15, 23, 28, 29] #[6] #[0, 2, 5, 6, 15, 24] #strongest lines i.e. 15 and 24 are messy; so is line 6
-abundance_plot(1, wl_C_18_O, solar_skiplist_C18O, star1_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 1")
-fit_min1_C18O, fit_min_dex1_C18O, ab_err1_C18O, ab_err_dex1_C18O = calc_abundance(1, wl_C_18_O, solar_skiplist_C18O, star1_C18O_skiplist, snip_width_C18O, 0.0, plot=True, CO_species = "C18O", label = "Solar Twin 1")
+abundance_plot(1, wl_C_18_O, solar_skiplist_C18O, star1_C18O_skiplist, snip_width_C18O, CO_species = "C18O", temp = 5870, label = "Solar Twin 1")
+fit_min1_C18O, fit_min_dex1_C18O, ab_err1_C18O, ab_err_dex1_C18O = calc_abundance(1, wl_C_18_O, solar_skiplist_C18O, star1_C18O_skiplist, snip_width_C18O, 0.0, plot=True, CO_species = "C18O", temp = 5870, label = "Solar Twin 1")
 print("HIP 102040 has a C18O abundance of " + str(fit_min1_C18O) + " +/- " + str(ab_err1_C18O) + " xSolar or " + str(fit_min_dex1_C18O) + " dex \n")
 
 
 #star 2: HIP 29432
 star2_C18O_skiplist = [0, 2, 3, 15, 24] #[0, 1, 2, 3, 5, 10, 14, 15, 23, 24, 28, 29]
-abundance_plot(2, wl_C_18_O, solar_skiplist_C18O, star2_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 2")
-fit_min2_C18O, fit_min_dex2_C18O, ab_err2_C18O, ab_err_dex2_C18O = calc_abundance(2, wl_C_18_O, solar_skiplist_C18O, star2_C18O_skiplist, snip_width_C18O, 3.0, plot=True, CO_species = "C18O", label = "Solar Twin 2")
+abundance_plot(2, wl_C_18_O, solar_skiplist_C18O, star2_C18O_skiplist, snip_width_C18O, CO_species = "C18O", temp = 5780, label = "Solar Twin 2")
+fit_min2_C18O, fit_min_dex2_C18O, ab_err2_C18O, ab_err_dex2_C18O = calc_abundance(2, wl_C_18_O, solar_skiplist_C18O, star2_C18O_skiplist, snip_width_C18O, 3.0, plot=True, CO_species = "C18O", temp = 5780, label = "Solar Twin 2")
 print("HIP 29432 has a C18O abundance of " + str(fit_min2_C18O) + " +/- " + str(ab_err2_C18O) + " xSolar or " + str(fit_min_dex2_C18O) + " dex \n")
 
 
 #star 3: HIP 42333
 star3_C18O_skiplist = [0, 2, 3, 15, 24] #[24] #24 optional; profile looked fine before it was removed
-abundance_plot(3, wl_C_18_O, solar_skiplist_C18O, star3_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 3")
-fit_min3_C18O, fit_min_dex3_C18O, ab_err3_C18O, ab_err_dex3_C18O = calc_abundance(3, wl_C_18_O, solar_skiplist_C18O, star3_C18O_skiplist, snip_width_C18O, 0.5, plot=True, CO_species = "C18O", label = "Solar Twin 3")
+abundance_plot(3, wl_C_18_O, solar_skiplist_C18O, star3_C18O_skiplist, snip_width_C18O, CO_species = "C18O", temp = 5870, label = "Solar Twin 3")
+fit_min3_C18O, fit_min_dex3_C18O, ab_err3_C18O, ab_err_dex3_C18O = calc_abundance(3, wl_C_18_O, solar_skiplist_C18O, star3_C18O_skiplist, snip_width_C18O, 0.5, plot=True, CO_species = "C18O", temp = 5870, label = "Solar Twin 3")
 print("HIP 42333 has a C18O abundance of " + str(fit_min3_C18O) + " +/- " + str(ab_err3_C18O) + " xSolar or " + str(fit_min_dex3_C18O) + " dex \n")
 
 
 #star 4: HIP 77052
 star4_C18O_skiplist = [0, 2, 3, 15, 24] #[14] #14 optional; profile looked fine before it was removed
-abundance_plot(4, wl_C_18_O, solar_skiplist_C18O, star4_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 4")
-fit_min4_C18O, fit_min_dex4_C18O, ab_err4_C18O, ab_err_dex4_C18O = calc_abundance(4, wl_C_18_O, solar_skiplist_C18O, star4_C18O_skiplist, snip_width_C18O, 1.5, plot=True, CO_species = "C18O", label = "Solar Twin 4")
+abundance_plot(4, wl_C_18_O, solar_skiplist_C18O, star4_C18O_skiplist, snip_width_C18O, CO_species = "C18O", temp = 5690, label = "Solar Twin 4")
+fit_min4_C18O, fit_min_dex4_C18O, ab_err4_C18O, ab_err_dex4_C18O = calc_abundance(4, wl_C_18_O, solar_skiplist_C18O, star4_C18O_skiplist, snip_width_C18O, 1.5, plot=True, CO_species = "C18O", temp = 5690, label = "Solar Twin 4")
 print("HIP 77052 has a C18O abundance of " + str(fit_min4_C18O) + " +/- " + str(ab_err4_C18O) + " xSolar or " + str(fit_min_dex4_C18O) + " dex \n")
 
 
 #star 5: HIP 79672
 star5_C18O_skiplist = [0, 2, 3, 15, 24] #stellar & model profiles look GREAT with these lines removed
-abundance_plot(5, wl_C_18_O, solar_skiplist_C18O, star5_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 5")
-fit_min5_C18O, fit_min_dex5_C18O, ab_err5_C18O, ab_err_dex5_C18O = calc_abundance(5, wl_C_18_O, solar_skiplist_C18O, star5_C18O_skiplist, snip_width_C18O, 0.75, plot=True, CO_species = "C18O", label = "Solar Twin 5")
+abundance_plot(5, wl_C_18_O, solar_skiplist_C18O, star5_C18O_skiplist, snip_width_C18O, CO_species = "C18O", temp = 5780, label = "Solar Twin 5")
+fit_min5_C18O, fit_min_dex5_C18O, ab_err5_C18O, ab_err_dex5_C18O = calc_abundance(5, wl_C_18_O, solar_skiplist_C18O, star5_C18O_skiplist, snip_width_C18O, 0.75, plot=True, CO_species = "C18O", temp = 5780, label = "Solar Twin 5")
 print("HIP 79672 has a C18O abundance of " + str(fit_min5_C18O) + " +/- " + str(ab_err5_C18O) + " xSolar or " + str(fit_min_dex5_C18O) + " dex \n")
 
 
 #star 6: HIP 85042
 star6_C18O_skiplist = [0, 2, 3, 15, 24] #[1, 6]
-abundance_plot(6, wl_C_18_O, solar_skiplist_C18O, star6_C18O_skiplist, snip_width_C18O, CO_species = "C18O", label = "Solar Twin 6")
-fit_min6_C18O, fit_min_dex6_C18O, ab_err6_C18O, ab_err_dex6_C18O = calc_abundance(6, wl_C_18_O, solar_skiplist_C18O, star6_C18O_skiplist, snip_width_C18O, 1.78, plot=True, CO_species = "C18O", label = "Solar Twin 6")
+abundance_plot(6, wl_C_18_O, solar_skiplist_C18O, star6_C18O_skiplist, snip_width_C18O, CO_species = "C18O", temp = 5690, label = "Solar Twin 6")
+fit_min6_C18O, fit_min_dex6_C18O, ab_err6_C18O, ab_err_dex6_C18O = calc_abundance(6, wl_C_18_O, solar_skiplist_C18O, star6_C18O_skiplist, snip_width_C18O, 1.78, plot=True, CO_species = "C18O", temp = 5690, label = "Solar Twin 6")
 print("HIP 85042 has a C18O abundance of " + str(fit_min6_C18O) + " +/- " + str(ab_err6_C18O) + " xSolar or " + str(fit_min_dex6_C18O) + " dex \n")
 
 ###
