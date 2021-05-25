@@ -60,6 +60,28 @@ wl_C_18_O = nu_C_18_O**(-1) * 10000
 wl_C_18_O = np.sort(wl_C_18_O)
 
 ####################################################################################################################################################################
+#write a function to load C & O isotopic abundance ratios from Kobayashi+ 2011
+def kobayashi_GCE(species):
+    if(species == "C"):
+        filename = base_dir + "\\gcemodels\\k11_feh-crat_solarneighborhood.csv"
+        feh_crat = pd.read_csv(filename, sep = ',')
+        feh_crat = (pd.DataFrame.to_numpy(feh_crat)).T
+        feh = feh_crat[0]
+        C_13 = feh_crat[1]
+        
+        return feh, C_13
+    
+    elif(species == "O"):
+        filename = base_dir + "\\gcemodels\\k11_feh-orat_solarneighborhood.csv"
+        feh_crat = pd.read_csv(filename, sep = ',')
+        feh_crat = (pd.DataFrame.to_numpy(feh_crat)).T
+        feh = feh_crat[0]
+        O_18 = feh_crat[1]
+        O_17 = feh_crat[2]
+        
+        return feh, O_17, O_18
+    
+####################################################################################################################################################################
 #load star data: wl, flux, err ONLY
 def star_data(star):
 #select a star
