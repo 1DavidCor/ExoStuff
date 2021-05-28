@@ -16,10 +16,10 @@ snip_width_13CO = 0.0006
 snip_width_C18O = 0.00015
 
 #set base directory: Laptop
-# base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
+base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
 
 #set base directory: Desktop
-base_dir = 'C:\\Users\\d338c921\\GitHub\\ExoStuff'
+#base_dir = 'C:\\Users\\d338c921\\GitHub\\ExoStuff'
 
 base_dir_spect = base_dir + '\\ST_spectra\\'
 base_dir_models = base_dir + '\\Solar_Models\\'
@@ -473,8 +473,8 @@ def de_slant(stack_vel, stack_flux, L_shoulder, R_shoulder, shoulder_width):
 def chi_sqr_lp(star_num, stack_vel_obs, stack_vel_model, stack_flux_obs, stack_flux_model, err, CO_species):
     #custom chi_sqr snip widths and line centers; lp = line profiles
     if CO_species == "13CO":
-        snip_bounds_L = [-5.864, -3.405, -4.429, -4.016, -5.227, -4.144]
-        snip_bounds_R = [6.118, 3.627, 6.235, 4.444, 4.273, 2.867]
+        snip_bounds_L = [-5.864, -3.405, -4.429, -4.016, -5.227, -6.35]
+        snip_bounds_R = [6.118, 3.627, 6.235, 4.444, 4.273, 4.83]
     elif CO_species == "C18O":
         snip_bounds_L = [-4.84, -5.2, -3.59, -3.55, -3.7, -4.64]
         snip_bounds_R = [4.4, 4.8, 3.91, 3.2, 3.67, 4.64]
@@ -587,7 +587,12 @@ def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip
     line_list = useable_lines(full_line_list, np.append(star_skiplist, solar_skiplist))
     stack_vel, stack_flux, stack_err = stack_data(star_num, line_list, snip_width, CO_species, temp, model = False)
     #SLANT CORRECTION!!!
-    slant = de_slant(stack_vel, stack_flux, -7.5, 7.5, 5)
+    
+    if (star_num == 6 and CO_species == "13CO"):
+        slant = de_slant(stack_vel, stack_flux, -6.5, 4.8, 2)
+    else:
+        slant = de_slant(stack_vel, stack_flux, -7.5, 7.5, 5)
+    
     stack_flux = stack_flux / slant(stack_vel)
     stack_err = stack_err / slant(stack_vel)
     
@@ -657,7 +662,11 @@ def abundance_plot(star_num, full_line_list, solar_skiplist, star_skiplist, snip
     line_list = useable_lines(full_line_list, np.append(star_skiplist, solar_skiplist))
     
     stack_vel, stack_flux, stack_err = stack_data(star_num, line_list, snip_width, CO_species, temp, model = False)
-    slant = de_slant(stack_vel, stack_flux, -7.5, 7.5, 5)
+    
+    if (star_num == 6 and CO_species == "13CO"):
+        slant = de_slant(stack_vel, stack_flux, -6.5, 4.8, 2)
+    else:
+        slant = de_slant(stack_vel, stack_flux, -7.5, 7.5, 5)
     
     if CO_species == "13CO":
         
