@@ -16,10 +16,10 @@ snip_width_13CO = 0.0006
 snip_width_C18O = 0.00015
 
 #set base directory: Laptop
-base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
+#base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
 
 #set base directory: Desktop
-#base_dir = 'C:\\Users\\d338c921\\GitHub\\ExoStuff'
+base_dir = 'C:\\Users\\d338c921\\GitHub\\ExoStuff'
 
 base_dir_spect = base_dir + '\\ST_spectra\\'
 base_dir_models = base_dir + '\\Solar_Models\\'
@@ -425,6 +425,59 @@ def snip_spectrum_simp(line_list, spectrum, wavegrid, snip_width, interp_sample_
     return snips_wl.T, snips_flux.T, snips_flux_norm.T
 ###WILL RETURN AN ERROR IF LINES FROM DISCONTINOUS REGIONS IN THE SPECTRUM ARE USED
 
+#####################################################################################################################################################################
+#Use this function to identify bad lines
+def id_bad_lines(star_num, solar_skiplist, star_skiplist, CO_species, line_by_line, save, label = "ST X"):
+    
+    #load star data
+    wl, flux, err = star_data(star_num)
+    
+    if(CO_species == "13CO"):
+        full_line_list = wl_13_CO
+    elif(CO_species == "C18O"):
+        full_line_list = wl_C_18_O
+    
+    lines = useable_lines(full_line_list, np.append(solar_skiplist, star_skiplist))
+    snips_wl, snips_flux, snips_flux_norm = snip_spectrum_simp(lines, flux, wl, 0.0006, 50)
+    
+    if line_by_line == True:
+        for i in range(len(lines)):
+            fig = plt.figure()
+            plt.title(label + ": Line " + str(i + 1) + " Spectral Snip: " + CO_species)
+            plt.xlabel("Wavelength (um)")
+            plt.ylabel("Normalized Flux Intensity")
+            plt.plot(snips_wl[:, i], snips_flux[:, i])
+            plt.axvline(x = lines[i], color = "k", linestyle = ':')
+            if save == True:
+                fig_path = base_dir + "\\5_28_2021 C18O Snips\\" + label
+                fig_filename = "\\line" + str(i + 1) + "snip.png"
+                fig.savefig(fig_path + fig_filename)
+    if(line_by_line == True and save == False):
+        print(lines)
+            
+    #plot snips individually in original wavlength grid
+    plt.figure()
+    plt.title(label + ": Spectral Snips for Selected Lines: " + CO_species)
+    plt.xlabel("Wavelength (um)")
+    plt.ylabel("Normalized Flux Intensity")
+    plt.plot(snips_wl, snips_flux)
+    for i in range(len(wl_C_18_O)):
+        plt.axvline(x = wl_C_18_O[i], color = "k", linestyle = ':')
+    
+    #plot stacked snips centered around v = 0
+    plt.figure()
+    plt.title(label + ": Stacked Spectral Snips: " + CO_species)
+    plt.xlabel("Velocity (km/s)")
+    plt.ylabel("Normalized Flux Intensity")
+    plt.ylim(0.8, 1.2)
+    plt.plot((snips_wl - lines) / lines * 3e5, snips_flux)
+    
+    return
+
+#plot the line profile (uses mean to stack absorption lines)
+# plt.figure()
+# plt.plot(np.mean((snips_wl1 - C18O_lines) / C18O_lines * 3e5, axis = 1), np.mean(snips_flux1, axis = 1))
+
 ####################################################################################################################################################################
 #Write a function to output stack_vel and stack_flux for a given star/model i.e. same result as snip_plots with output_stack = True but without the plots
 def stack_data(star, useable_line_list, snip_width, CO_species, temp, model):
@@ -601,7 +654,7 @@ def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip
         stack_vel2, stack_flux2 = stack_data(2, line_list, snip_width, CO_species, temp, model = True)
         stack_vel3, stack_flux3 = stack_data(3, line_list, snip_width, CO_species, temp, model = True)
         stack_vel4, stack_flux4 = stack_data(4, line_list, snip_width, CO_species, temp, model = True)
-        label = "Numerical Abundance Calculation: $\chi^2$ Test Interp: 13CO"
+        plt_title = " Abundance Calculation: $\chi^2$ Test Interp: 13CO"
             
         #calculate 4 chi_sqr values and put them in an array
         chi_sqr_list = [chi_sqr_lp(star_num, stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err, CO_species = "13CO"), chi_sqr_lp(star_num, stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err, CO_species = "13CO"), chi_sqr_lp(star_num, stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err, CO_species = "13CO"), chi_sqr_lp(star_num, stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err, CO_species = "13CO")]
@@ -617,7 +670,7 @@ def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip
         stack_vel4, stack_flux4 = stack_data(4, line_list, snip_width, CO_species, temp, model = True)
         stack_vel5, stack_flux5 = stack_data(5, line_list, snip_width, CO_species, temp, model = True)
         stack_vel6, stack_flux6 = stack_data(6, line_list, snip_width, CO_species, temp, model = True)
-        label = "Numerical Abundance Calculation: $\chi^2$ Test Interp: C18O"
+        plt_title = " Abundance Calculation: $\chi^2$ Test Interp: C18O"
             
         #calculate 6 chi_sqr values and put them in an array
         chi_sqr_list = [chi_sqr_lp(star_num, stack_vel, stack_vel1, stack_flux, stack_flux1, stack_err, CO_species = "C18O"), chi_sqr_lp(star_num, stack_vel, stack_vel2, stack_flux, stack_flux2, stack_err, CO_species = "C18O"), chi_sqr_lp(star_num, stack_vel, stack_vel3, stack_flux, stack_flux3, stack_err, CO_species = "C18O"), chi_sqr_lp(star_num, stack_vel, stack_vel4, stack_flux, stack_flux4, stack_err, CO_species = "C18O"), chi_sqr_lp(star_num, stack_vel, stack_vel5, stack_flux, stack_flux5, stack_err, CO_species = "C18O"), chi_sqr_lp(star_num, stack_vel, stack_vel6, stack_flux, stack_flux6, stack_err, CO_species = "C18O")]
@@ -641,7 +694,7 @@ def calc_abundance(star_num, full_line_list, solar_skiplist, star_skiplist, snip
     #plot if option plot= True
     if (plot == True):
         plt.figure()
-        plt.title(label)
+        plt.title(label + plt_title)
         plt.xlabel("xSolar Abundance")
         plt.ylabel("$\chi^2$")
         plt.scatter(x_list, chi_sqr_list, marker = 'o', label = "$\chi^2$ Interp")
@@ -818,20 +871,6 @@ print("\n")
 
 solar_skiplist_C18O = [7, 9, 11, 12, 13, 16, 17, 18, 19, 21, 22, 25, 26, 27, 30, 31] #[12, 13, 26, 27] = no flux
 # #NOTE: lines 15 or 24 are the strongest
-
-#####################################################################################################################################################################
-#Use these lines to identify bad lines; change star_num and stellar_skiplist only
-# wl, flux, err = star_data(1)
-# C18O_lines = useable_lines(wl_C_18_O, np.append(solar_skiplist_C18O, []))
-# snips_wl1, snips_flux1, snips_flux_norm1 = snip_spectrum_simp(C18O_lines, flux, wl, 0.0006, 50)
-# plt.figure()
-# plt.plot(snips_wl1, snips_flux1)
-# for i in range(len(wl_C_18_O)):
-#     plt.axvline(x = wl_C_18_O[i], color = "k", linestyle = ':')
-# plt.figure()
-# plt.plot((snips_wl1 - C18O_lines) / C18O_lines * 3e5, snips_flux1)
-# plt.figure()
-# plt.plot(np.mean((snips_wl1 - C18O_lines) / C18O_lines * 3e5, axis = 1), np.mean(snips_flux1, axis = 1))
 
 #####################################################################################################################################################################
 snip_width_C18O = 0.0006 #make sure snip width is wide enough for deslant to do its thing!!!
