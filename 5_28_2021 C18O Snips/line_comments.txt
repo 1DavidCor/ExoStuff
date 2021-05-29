@@ -1,0 +1,31 @@
+Additional Comments on the Lines:
+ST 1 Lines: 
+
+[5, 9]: not sure what’s going on here 
+[4, 6]: feature is redshifted? 
+
+[2, 3, 8]: feature is blushifted? 
+
+[1, 7, 10]: Good lines: centered!!! 
+
+ST 2 Lines: 
+
+[3, 6, 7, 8, 9, 11]: snip centered around a peak: probably what lead to the dual-humped profile 
+[4]: centered 
+
+[2]: centered? Has a tooth on the right 
+
+[5]: redshifted? Has a tooth on the right 
+
+[1]: bad line: tellurics 
+
+[10]: redshifted? 
+
+ST 6 Lines: 
+
+[2, 3, 7, 8, 9, 10]: match current line profile: peak to the left of line center; valley to the left; are these lines redshifted? 
+[1, 5]: opposite of current line profile: peak to the right of line center; valley to the left; are these lines blueshifted? 
+
+[6, 11]: good; centered 
+
+[4]: nothing around line center… 
