@@ -474,10 +474,6 @@ def id_bad_lines(star_num, solar_skiplist, star_skiplist, CO_species, line_by_li
     
     return
 
-#plot the line profile (uses mean to stack absorption lines)
-# plt.figure()
-# plt.plot(np.mean((snips_wl1 - C18O_lines) / C18O_lines * 3e5, axis = 1), np.mean(snips_flux1, axis = 1))
-
 ####################################################################################################################################################################
 #Write a function to output stack_vel and stack_flux for a given star/model i.e. same result as snip_plots with output_stack = True but without the plots
 def stack_data(star, useable_line_list, snip_width, CO_species, temp, model):
