@@ -481,7 +481,7 @@ def id_bad_lines(star_num, solar_skiplist, star_skiplist, CO_species, line_by_li
 
 #####################################################################################################################################################################
 #Use this function to identify bad lines
-def id_bad_lines_SM(solar_skiplist, star_skiplist, CO_species, temp, line_by_line, save, label = "ST X"):
+def id_bad_lines_SM(solar_skiplist, star_skiplist, CO_species, temp, line_by_line, save, label = " ST X"):
     
     if(CO_species == "13CO"):
         full_line_list = wl_13_CO
@@ -491,13 +491,18 @@ def id_bad_lines_SM(solar_skiplist, star_skiplist, CO_species, temp, line_by_lin
     lines = useable_lines(full_line_list, np.append(solar_skiplist, star_skiplist))
     
     if line_by_line == True:
-        plt.figure(figsize=(15,15))
-        plt.suptitle(label + ": Selected " +  CO_species + " Lines")
+        plt.figure(figsize=(15,45))
+        plt.suptitle("T = " + str(temp) + label + ": Selected " +  CO_species + " Lines")
+        plt.xlabel("Wavelength (um)")
+        plt.ylabel("Normalized Flux Intensity")
         for i in range(len(lines)):
-            plt.subplot(int(np.ceil(len(lines) / 2)), 2, i + 1) ###adjust size
+            if (len(lines) <= 12):
+                plt.subplot(int(np.ceil(len(lines) / 2)), 2, i + 1) ###adjust size
+                plt.subplots_adjust(top = 0.935, wspace = 0.20, hspace = 0.55)
+            elif (len(lines) >= 12):
+                plt.subplot(int(np.ceil(len(lines) / 4)), 4, i + 1) ###adjust size
+                plt.subplots_adjust(top = 0.935, wspace = 0.20, hspace = 0.55)
             plt.title("Line " + str(i + 1))
-            plt.xlabel("Wavelength (um)")
-            plt.ylabel("Normalized Flux Intensity")
             plt.xlim(lines[i] - 0.0003, lines[i] + 0.0003)
             plt.axvline(x = lines[i], color = "k", linestyle = ':')
             for j in range(5):
@@ -509,7 +514,6 @@ def id_bad_lines_SM(solar_skiplist, star_skiplist, CO_species, temp, line_by_lin
             #     fig_path = base_dir + "\\5_28_2021 C18O Snips\\" + label
             #     fig_filename = "\\line" + str(i + 1) + "snip.png"
             #     fig.savefig(fig_path + fig_filename)
-        plt.subplots_adjust(top = 0.935, wspace = 0.20, hspace = 0.55)
         #plt.subplot_tool()
     if(line_by_line == True and save == False):
         print(lines)
