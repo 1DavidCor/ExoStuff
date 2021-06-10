@@ -442,10 +442,10 @@ def id_bad_lines(star_num, solar_skiplist, star_skiplist, CO_species, line_by_li
     
     if line_by_line == True:
         plt.figure(figsize=(15,15))
-        plt.title(label + ": " +  CO_species + " Lines")
+        plt.suptitle(label + ": Selected " +  CO_species + " Lines")
         for i in range(len(lines)):
             plt.subplot(int(np.ceil(len(lines) / 2)), 2, i+1) ###adjust size
-            plt.title(label + ": Line " + str(i + 1))
+            plt.title("Line " + str(i + 1))
             plt.xlabel("Wavelength (um)")
             plt.ylabel("Normalized Flux Intensity")
             plt.plot(snips_wl[:, i], snips_flux[:, i])
@@ -455,6 +455,8 @@ def id_bad_lines(star_num, solar_skiplist, star_skiplist, CO_species, line_by_li
             #     fig_path = base_dir + "\\5_28_2021 C18O Snips\\" + label
             #     fig_filename = "\\line" + str(i + 1) + "snip.png"
             #     fig.savefig(fig_path + fig_filename)
+        plt.subplots_adjust(top = 0.935, wspace = 0.20, hspace = 0.55)
+        #plt.subplots_adjust()
     if(line_by_line == True and save == False):
         print(lines)
             
@@ -474,6 +476,43 @@ def id_bad_lines(star_num, solar_skiplist, star_skiplist, CO_species, line_by_li
     plt.ylabel("Normalized Flux Intensity")
     plt.ylim(0.8, 1.2)
     plt.plot((snips_wl - lines) / lines * 3e5, snips_flux)
+    
+    return
+
+#####################################################################################################################################################################
+#Use this function to identify bad lines
+def id_bad_lines_SM(solar_skiplist, star_skiplist, CO_species, temp, line_by_line, save, label = "ST X"):
+    
+    if(CO_species == "13CO"):
+        full_line_list = wl_13_CO
+    elif(CO_species == "C18O"):
+        full_line_list = wl_C_18_O
+    
+    lines = useable_lines(full_line_list, np.append(solar_skiplist, star_skiplist))
+    
+    if line_by_line == True:
+        plt.figure(figsize=(15,15))
+        plt.suptitle(label + ": Selected " +  CO_species + " Lines")
+        for i in range(len(lines)):
+            plt.subplot(int(np.ceil(len(lines) / 2)), 2, i + 1) ###adjust size
+            plt.title("Line " + str(i + 1))
+            plt.xlabel("Wavelength (um)")
+            plt.ylabel("Normalized Flux Intensity")
+            plt.xlim(lines[i] - 0.0003, lines[i] + 0.0003)
+            plt.axvline(x = lines[i], color = "k", linestyle = ':')
+            for j in range(5):
+                wl, flux = solar_data(CO_species, temp, j + 1)
+                wl, flux = snip_simp(wl, flux, lines[i], 0.0006)
+                plt.ylim(np.mean(flux) - 0.005, np.mean(flux) + 0.005)
+                plt.plot(wl, flux)
+            # if save == True:
+            #     fig_path = base_dir + "\\5_28_2021 C18O Snips\\" + label
+            #     fig_filename = "\\line" + str(i + 1) + "snip.png"
+            #     fig.savefig(fig_path + fig_filename)
+        plt.subplots_adjust(top = 0.935, wspace = 0.20, hspace = 0.55)
+        #plt.subplot_tool()
+    if(line_by_line == True and save == False):
+        print(lines)
     
     return
 
