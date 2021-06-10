@@ -16,10 +16,10 @@ snip_width_13CO = 0.0006
 snip_width_C18O = 0.00015
 
 #set base directory: Laptop
-#base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
+base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
 
 #set base directory: Desktop
-base_dir = 'C:\\Users\\d338c921\\GitHub\\ExoStuff'
+#base_dir = 'C:\\Users\\d338c921\\GitHub\\ExoStuff'
 
 base_dir_spect = base_dir + '\\ST_spectra\\'
 base_dir_models = base_dir + '\\Solar_Models\\'
@@ -438,20 +438,23 @@ def id_bad_lines(star_num, solar_skiplist, star_skiplist, CO_species, line_by_li
         full_line_list = wl_C_18_O
     
     lines = useable_lines(full_line_list, np.append(solar_skiplist, star_skiplist))
-    snips_wl, snips_flux, snips_flux_norm = snip_spectrum_simp(lines, flux, wl, 0.0006, 50)
+    snips_wl, snips_flux, snips_flux_norm, snips_err = snip_spectrum(lines, flux, err, wl, 0.0006, 50)
     
     if line_by_line == True:
+        plt.figure(figsize=(15,15))
+        plt.title(label + ": " +  CO_species + " Lines")
         for i in range(len(lines)):
-            fig = plt.figure()
-            plt.title(label + ": Line " + str(i + 1) + " Spectral Snip: " + CO_species)
+            plt.subplot(int(np.ceil(len(lines) / 2)), 2, i+1) ###adjust size
+            plt.title(label + ": Line " + str(i + 1))
             plt.xlabel("Wavelength (um)")
             plt.ylabel("Normalized Flux Intensity")
             plt.plot(snips_wl[:, i], snips_flux[:, i])
+            plt.errorbar(snips_wl[:, i], snips_flux[:, i], yerr = snips_err[:, i], fmt = 'none', linewidth = 0.5, color = "black")
             plt.axvline(x = lines[i], color = "k", linestyle = ':')
-            if save == True:
-                fig_path = base_dir + "\\5_28_2021 C18O Snips\\" + label
-                fig_filename = "\\line" + str(i + 1) + "snip.png"
-                fig.savefig(fig_path + fig_filename)
+            # if save == True:
+            #     fig_path = base_dir + "\\5_28_2021 C18O Snips\\" + label
+            #     fig_filename = "\\line" + str(i + 1) + "snip.png"
+            #     fig.savefig(fig_path + fig_filename)
     if(line_by_line == True and save == False):
         print(lines)
             
