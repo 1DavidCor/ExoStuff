@@ -16,10 +16,10 @@ snip_width_13CO = 0.0006
 snip_width_C18O = 0.00015
 
 #set base directory: Laptop
-base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
+#base_dir = 'C:\\Users\\there\\Desktop\\ExoStuff_GitHub\\'
 
 #set base directory: Desktop
-#base_dir = 'C:\\Users\\d338c921\\GitHub\\ExoStuff'
+base_dir = 'C:\\Users\\d338c921\\GitHub\\ExoStuff'
 
 base_dir_spect = base_dir + '\\ST_spectra\\'
 base_dir_models = base_dir + '\\Solar_Models\\'
@@ -460,22 +460,22 @@ def id_bad_lines(star_num, solar_skiplist, star_skiplist, CO_species, line_by_li
     if(line_by_line == True and save == False):
         print(lines)
             
-    #plot snips individually in original wavlength grid
-    plt.figure()
-    plt.title(label + ": Spectral Snips for Selected Lines: " + CO_species)
-    plt.xlabel("Wavelength (um)")
-    plt.ylabel("Normalized Flux Intensity")
-    plt.plot(snips_wl, snips_flux)
-    for i in range(len(wl_C_18_O)):
-        plt.axvline(x = wl_C_18_O[i], color = "k", linestyle = ':')
+    # #plot snips individually in original wavlength grid
+    # plt.figure()
+    # plt.title(label + ": Spectral Snips for Selected Lines: " + CO_species)
+    # plt.xlabel("Wavelength (um)")
+    # plt.ylabel("Normalized Flux Intensity")
+    # plt.plot(snips_wl, snips_flux)
+    # for i in range(len(wl_C_18_O)):
+    #     plt.axvline(x = wl_C_18_O[i], color = "k", linestyle = ':')
     
-    #plot stacked snips centered around v = 0
-    plt.figure()
-    plt.title(label + ": Stacked Spectral Snips: " + CO_species)
-    plt.xlabel("Velocity (km/s)")
-    plt.ylabel("Normalized Flux Intensity")
-    plt.ylim(0.8, 1.2)
-    plt.plot((snips_wl - lines) / lines * 3e5, snips_flux)
+    # #plot stacked snips centered around v = 0
+    # plt.figure()
+    # plt.title(label + ": Stacked Spectral Snips: " + CO_species)
+    # plt.xlabel("Velocity (km/s)")
+    # plt.ylabel("Normalized Flux Intensity")
+    # plt.ylim(0.8, 1.2)
+    # plt.plot((snips_wl - lines) / lines * 3e5, snips_flux)
     
     return
 
@@ -919,14 +919,14 @@ snip_width_C18O = 0.0006 #make sure snip width is wide enough for deslant to do 
 velocity_shifts_C18O = [0, -1.19, 0.405, 0, 0.79, 0.585]
 
 #star 1: HIP 102040
-star1_C18O_skiplist = [0, 2, 3, 6, 15, 24] #[0, 1, 3, 5, 10, 14, 15, 23, 28, 29] #[6] #[0, 2, 5, 6, 15, 24] #strongest lines i.e. 15 and 24 are messy; so is line 6
+star1_C18O_skiplist = [0, 2, 3, 6, 10, 15, 24] #[0, 1, 3, 5, 10, 14, 15, 23, 28, 29] #[6] #[0, 2, 5, 6, 15, 24] #strongest lines i.e. 15 and 24 are messy; so is line 6
 abundance_plot(1, wl_C_18_O, solar_skiplist_C18O, star1_C18O_skiplist, snip_width_C18O, CO_species = "C18O", temp = 5870, label = "Solar Twin 1")
 fit_min1_C18O, fit_min_dex1_C18O, ab_err1_C18O, ab_err_dex1_C18O = calc_abundance(1, wl_C_18_O, solar_skiplist_C18O, star1_C18O_skiplist, snip_width_C18O, 0.0, plot=True, CO_species = "C18O", temp = 5870, label = "Solar Twin 1")
 print("HIP 102040 has a C18O abundance of " + str(fit_min1_C18O) + " +/- " + str(ab_err1_C18O) + " xSolar or " + str(fit_min_dex1_C18O) + " dex \n")
 
 
 #star 2: HIP 29432
-star2_C18O_skiplist = [0, 2, 3, 15, 24] #[0, 1, 2, 3, 5, 10, 14, 15, 23, 24, 28, 29]
+star2_C18O_skiplist = [0, 1, 2, 3, 15, 24] #[0, 1, 2, 3, 5, 10, 14, 15, 23, 24, 28, 29]
 abundance_plot(2, wl_C_18_O, solar_skiplist_C18O, star2_C18O_skiplist, snip_width_C18O, CO_species = "C18O", temp = 5780, label = "Solar Twin 2")
 fit_min2_C18O, fit_min_dex2_C18O, ab_err2_C18O, ab_err_dex2_C18O = calc_abundance(2, wl_C_18_O, solar_skiplist_C18O, star2_C18O_skiplist, snip_width_C18O, 3.0, plot=True, CO_species = "C18O", temp = 5780, label = "Solar Twin 2")
 print("HIP 29432 has a C18O abundance of " + str(fit_min2_C18O) + " +/- " + str(ab_err2_C18O) + " xSolar or " + str(fit_min_dex2_C18O) + " dex \n")
